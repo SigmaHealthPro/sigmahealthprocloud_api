@@ -275,6 +275,19 @@ namespace BAL.Implementation
         {
             try
             {
+                var newAddressId = "";
+                var lastAddressId = context.Addresses.OrderByDescending(a => a.AddressId).Select(a => a.AddressId).FirstOrDefault();
+                if (lastAddressId != null)
+                {
+                    
+                    var numericPart = int.Parse(lastAddressId.Substring(3));                     
+                    numericPart++;
+                    // Format the incremented numeric part back into the address_id format
+                     newAddressId = $"AD_{numericPart:D3}"; // Assuming you want numeric part to have at least 3 digits
+
+                }
+
+
                 var neworders = new Order()
                 {
                     FacilityId = entity.FacilityId,
@@ -289,7 +302,7 @@ namespace BAL.Implementation
                     CreatedBy = entity.CreatedBy,
                     CreatedDate = entity.CreatedDate,
                     UpdatedBy = entity.UpdatedBy,
-                    UpdatedDate = entity.UpdatedDate,
+                    UpdatedDate = DateTime.UtcNow,
                     Isdelete = entity.Isdelete
                 };
                 context.Orders.Add(neworders);
@@ -308,7 +321,7 @@ namespace BAL.Implementation
                         CreatedBy = entity.CreatedBy,
                         CreatedDate = entity.CreatedDate,
                         UpdatedBy = entity.UpdatedBy,
-                        UpdatedDate = entity.UpdatedDate,
+                        UpdatedDate = DateTime.UtcNow,
                     };
                     context.OrderItems.Add(neworditem);
                     await context.SaveChangesAsync();
@@ -319,15 +332,16 @@ namespace BAL.Implementation
                     Line1 = entity.Address.Line1,
                     Line2 = entity.Address.Line2,
                     Suite = entity.Address.Suite,
-                    CountryId = entity.Address.CountryId,
-                    CountyId = entity.Address.CountryId,
-                    StateId = entity.Address.CountryId,
-                    CityId = entity.Address.CountryId,
+                    CountryId = entity.Address.Countryid,
+                    CountyId = entity.Address.Countyid,
+                    StateId = entity.Address.Stateid,
+                    CityId = entity.Address.Cityid,
                     ZipCode = entity.Address.ZipCode,
                     CreatedBy = entity.CreatedBy,
                     CreatedDate = entity.CreatedDate,
                     UpdatedBy = entity.UpdatedBy,
-                    UpdatedDate = entity.UpdatedDate
+                    UpdatedDate = DateTime.UtcNow,
+                    AddressId= newAddressId,
                 };
                 context.Addresses.Add(neworderaddress);
                 await context.SaveChangesAsync();
@@ -354,7 +368,7 @@ namespace BAL.Implementation
                     CreatedBy = entity.CreatedBy,
                     CreatedDate = entity.CreatedDate,
                     UpdatedBy = entity.UpdatedBy,
-                    UpdatedDate = entity.UpdatedDate,
+                    UpdatedDate = DateTime.UtcNow,
                     ShipmentAddressId = neworderaddress.Id
                 };
                 context.Shipments.Add(newshippment);

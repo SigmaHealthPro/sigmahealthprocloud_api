@@ -67,7 +67,7 @@ namespace BAL.Implementation
                 {
                     var model = new Userloginmodel()
                     {
-                        UserId = usermod.UserId,
+                        UserId = usermod.Id,
                         gender = usermod.Gender,
                         username = usermod.FirstName +" "+ usermod.LastName,
                         firstName = usermod.FirstName,

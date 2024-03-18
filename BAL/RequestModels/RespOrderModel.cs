@@ -10,9 +10,9 @@ namespace BAL.RequestModels
 {
     public class RespOrderModel:BaseModel
     {
-        public List<OrderofItem> OrderofItems { get; set; }
-        public Address Address { get; set; }
-        public Shiping Shiping { get; set; }
+        public List<orderItems> OrderofItems { get; set; }
+        public address Address { get; set; }
+        public shipment Shiping { get; set; }
 
         public Guid? UserId { get; set; }
 
@@ -35,16 +35,15 @@ namespace BAL.RequestModels
         public string? OrderStatus { get; set; }
         
     }
-    public class OrderofItem : BaseModel
+    public class orderItems : BaseModel
     {
         public string? OrderItemDesc { get; set; }
-        public Guid? ProductId { get; set; }
-        public int OrderId { get; set; }
+        public Guid? ProductId { get; set; }        
         public string? OrderItemStatus { get; set; }
         public string? UnitPrice { get; set; }
         public string? Quantity { get; set; }
     }
-    public class Addresses : BaseModel
+    public class address : BaseModel
     {
         public string? Line1 { get; set; }
         public string? Line2 { get; set; }
@@ -59,7 +58,7 @@ namespace BAL.RequestModels
         public Guid? Cityid { get; set; }
         public string? ZipCode { get; set; }
     }
-    public class Shiping : BaseModel
+    public class shipment : BaseModel
     {
         public DateTime? ShipmentDate { get; set; }
         public string? PackageSize { get; set; }
