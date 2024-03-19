@@ -125,7 +125,9 @@ namespace BAL.Implementation
                                 k.cvx,
                                 k.mvx,
                                 k.vp
-                            }).ToListAsync();
+                            }).GroupBy(x => new { x.product.ProductId, x.cvx.Id })
+    .Select(group => group.First())
+                            .ToListAsync();
             Parallel.ForEach(vaccines, async i =>
             {
                 var model = new VaccinesModel()
