@@ -51,14 +51,18 @@ namespace Web_API.Controllers
         public async Task<IActionResult> GetAllFacilities()
            => Ok(await _unitOfWork.Facilities.GetAllAsync().ConfigureAwait(true));
         [HttpGet]
+        [Route("getallmvx")]
+        public async Task<IActionResult> GetAllMVX()
+          => Ok(await _unitOfWork.Orders.GetAllManufacturers().ConfigureAwait(true));
+        [HttpGet]
         [Route("getallproducts")]
         public async Task<IActionResult> GetAllProducts()
           => Ok(await _unitOfWork.Products.GetAllAsync().ConfigureAwait(true));
 
         [HttpPost]
         [Route("getallvaccinesbyfacilityid")]
-        public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize)
-         => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize).ConfigureAwait(true));
+        public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize,Guid manufacturerid)
+         => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize,manufacturerid).ConfigureAwait(true));
         #endregion
     }
 }

@@ -270,6 +270,24 @@ namespace BAL.Implementation
             return PaginationHelper.Paginate(response, pagenumber, pagesize, Convert.ToInt32(totalRows));
            
         }
+        public async Task<IEnumerable<Mvx>> GetAllManufacturers()
+        {
+            var manufacturerslist = new List<Mvx>();
+
+            var Manufacturers = await context.Set<Mvx>().ToListAsync();
+            foreach (var m in Manufacturers)
+            {
+                var mvxdet = new Mvx()
+                {
+                    Id = m.Id,
+                    ManufacturerId = m.ManufacturerId,
+                    ManufacturerName = m.ManufacturerName,
+                    
+                };
+                manufacturerslist.Add(mvxdet);
+            }
+            return manufacturerslist;
+        }
 
         public async Task<ApiResponse<string>> InsertOrdersAsync(RespOrderModel entity)
         {
