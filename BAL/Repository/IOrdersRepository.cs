@@ -17,5 +17,6 @@ namespace BAL.Repository
         public Task<ApiResponse<string>> InsertOrdersAsync(RespOrderModel entity);
 
         public Task<IEnumerable<Mvx>> GetAllManufacturers();
+        public Task<ApiResponse<UserAddressModel>> GetAddressbyUserid(Guid userid);
     }
 }

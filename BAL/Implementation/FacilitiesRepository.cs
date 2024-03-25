@@ -103,5 +103,30 @@ namespace BAL.Implementation
                 return ApiResponse<string>.Fail("Facility with the given ID not found.");
             }
         }
+        public async Task<IEnumerable<Facility>> GetAllFacilitiesbyjurdid(Guid jurdid)
+        {
+            var facilitylist = new List<Facility>();           
+
+            var facilities = await context.Facilities
+                             .Join(context.Organizations, f=>f.OrganizationsId.ToString(), o => o.Id.ToString(), (f, o) => new { facilities = f, items = o }).
+                             Join(context.Juridictions, or=>or.items.JuridictionId.ToString(), j=>j.Id.ToString(), (or, j) => new {facilities=or.facilities,organizations=or.items,juridiction=j}).
+                             Where(i=>i.juridiction.Id== jurdid && i.facilities.Isdelete==false).Select(i=>new
+                             {
+                                 i.facilities
+                             })
+                .ToListAsync();
+            foreach (var f in facilities)
+            {
+                var facility = new Facility()
+                {
+                    Id = f.facilities.Id,
+                    FacilityId = f.facilities.FacilityId,
+                    FacilityName = f.facilities.FacilityName                   
+                };
+                facilitylist.Add(facility);
+            }
+            return facilitylist;
+
+        }
     }
 }

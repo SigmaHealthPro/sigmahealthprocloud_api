@@ -50,6 +50,11 @@ namespace Web_API.Controllers
         [Route("getallfacilities")]
         public async Task<IActionResult> GetAllFacilities()
            => Ok(await _unitOfWork.Facilities.GetAllAsync().ConfigureAwait(true));
+        //GetAllFacilitiesbyjurdid
+        [HttpPost]
+        [Route("getallfacilitiesbyjurdid")]
+        public async Task<IActionResult> GetAllFacilitiesbyjurdid(Guid jurdid)
+        => Ok(await _unitOfWork.Facilities.GetAllFacilitiesbyjurdid(jurdid).ConfigureAwait(true));
         [HttpGet]
         [Route("getallmvx")]
         public async Task<IActionResult> GetAllMVX()
@@ -63,6 +68,10 @@ namespace Web_API.Controllers
         [Route("getallvaccinesbyfacilityid")]
         public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize,Guid manufacturerid)
          => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize,manufacturerid).ConfigureAwait(true));
+        [HttpPost]
+        [Route("getaddressbyuserid")]
+        public async Task<IActionResult> GetAddressbyUserid(Guid userid)
+        => Ok(await _unitOfWork.Orders.GetAddressbyUserid(userid).ConfigureAwait(true));
         #endregion
     }
 }

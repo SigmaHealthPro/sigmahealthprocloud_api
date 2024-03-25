@@ -2,6 +2,7 @@
 using BAL.Pagination;
 using BAL.Repository;
 using BAL.RequestModels;
+using BAL.Responses;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -399,6 +400,51 @@ namespace BAL.Implementation
                 return ApiResponse<string>.Fail("An error occurred while creating the Order.");
             }
 
+        }
+        public async Task<ApiResponse<UserAddressModel>> GetAddressbyUserid(Guid userid)
+        {
+            try
+            {
+
+                var useraddress = await context.Addresses.
+                                 Join(context.EntityAddresses, ad => ad.Id, ea => ea.Addressid, (ad, ea) => new { address = ad, entityaddress = ea }).
+                                 Join(context.Users, e => e.entityaddress.EntityId, u => u.Id, (e, u) => new { e.address, e.entityaddress, users = u }).
+                                 Join(context.Countries, a => a.address.CountryId, c => c.Id, (a, c) => new { a.address, a.entityaddress, a.users,country=c }).
+                                 Join(context.States, a => a.address.StateId, s => s.Id, (a, s) => new { a.address, a.entityaddress, a.users,a.country,state=s }).
+                                 Join(context.Counties, a => a.address.CountyId, cu => cu.Id, (a, cu) => new { a.address, a.entityaddress, a.users, a.country,a.state,county=cu}).
+                                 Join(context.Cities, a => a.address.CityId, ct => ct.Id, (a, ct) => new { a.address, a.entityaddress, a.users, a.country,a.state,a.county,city=ct }).
+                                 Where(i => i.users.Id == userid).Select(i => new UserAddressModel
+                                 { 
+                                     id=i.address.Id,
+                                     Addressid=i.address.AddressId,
+                                     Cityname=i.city.CityName,
+                                     Countyname=i.county.CountyName,
+                                     Statename=i.state.StateName,
+                                     Countryname=i.country.CountryName,
+                                     Cityid=i.address.CityId,
+                                     Countryid=i.address.CountryId,
+                                     Countyid=i.address.CountyId,
+                                     Stateid = i.address.StateId,
+                                     Line1 = i.address.Line1,
+                                     Line2 = i.address.Line2,
+                                     Suite = i.address.Suite,
+                                     ZipCode = i.address.ZipCode
+                                 }).FirstOrDefaultAsync();
+                if (useraddress != null)
+                {
+                    return  ApiResponse<UserAddressModel>.Success(useraddress, "User address fetched successfully."); ;
+                }
+                else
+                {
+                    return  ApiResponse<UserAddressModel>.Fail("Address not found for the given user ID");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<UserAddressModel>.Fail("An error occurred while fetching Address details.");
+            }
+        
         }
     }
 }
