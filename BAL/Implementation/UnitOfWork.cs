@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data;
 
 namespace BAL.Implementation
 {
@@ -14,6 +15,7 @@ namespace BAL.Implementation
     {
         private readonly SigmaproIisContext _context;
         private readonly ILogger<UnitOfWork> _logger;
+        private readonly SigmaproIisContextUdf _dbContextudf;
 
         public ICitiesRepository Cities { get; private set; }
         public ICountiesRepository Counties { get; private set; }
@@ -29,6 +31,8 @@ namespace BAL.Implementation
         public IOrdersRepository Orders { get; private set; }
         public IBusinessConfigurationRepository BusinessConfiguration { get; private set; }
         public ISiteRepository Sites { get; private set; }
+        public IEventRepository Events { get; private set; }
+        public IProviderRepository Providers { get; private set; }
         public IPatientRepository Patients { get; private set; }
         public IProductRepository Products { get; private set; }
 
@@ -52,6 +56,8 @@ namespace BAL.Implementation
             Orders = new OrdersRepository(_context, _logger);
             Sites = new SiteRepository(_context, _logger);
             Patients = new PatientRepository(_context, _logger);
+            Events = new EventRepository(_context, _logger, _dbContextudf);
+            Providers = new ProviderRepository(_context, _logger, _dbContextudf);
             Products = new ProductRepository(_context, _logger);
         }
 

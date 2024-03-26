@@ -37,7 +37,10 @@ namespace Web_API.Controllers
         [Route("getsitedetailsbyid")]
         public async Task<IActionResult> GetSiteDetailsById(Guid sitetId) =>
            Ok(await _unitOfWork.Sites.GetSiteDetailsById(sitetId).ConfigureAwait(true));
-
+        [HttpGet]
+        [Route("AllSites")]
+        public async Task<IActionResult> GetAllSites()
+         => Ok(await _unitOfWork.Sites.GetAllSites().ConfigureAwait(true));
 
 
     }

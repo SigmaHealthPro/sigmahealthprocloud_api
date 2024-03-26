@@ -14,5 +14,6 @@ namespace BAL.Repository
     {
         public Task<IEnumerable<SiteModel>> GetAllAsync(SearchParams search);
         Task<ApiResponse<SiteModel>> GetSiteDetailsById(Guid siteId);
+        public Task<List<SiteModel>> GetAllSites();
     }
 }
