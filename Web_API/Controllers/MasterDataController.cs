@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using BAL.Constant;
+using BAL.Responses;
 
 namespace Web_API.Controllers
 {
@@ -85,5 +87,21 @@ namespace Web_API.Controllers
         public async Task<IActionResult> GenerateNextId([FromBody] GenerateNextIdRequest obj)
         => Ok(await _masterdataservice.GenerateNextId(obj).ConfigureAwait(true));
 
+
+        [HttpGet]
+        [Route("getlistofpatientduplicatedata")]
+        public async Task<IActionResult> GetListOfPatientDuplicateData()
+          => Ok(await _masterdataservice.GetListOfPatientDuplicateData().ConfigureAwait(true));
+
+        [HttpGet]
+        [Route("getlistofpatientnewdata")]
+        public async Task<IActionResult> GetListOfPatientNewData()
+          => Ok(await _masterdataservice.GetListOfPatientNewData().ConfigureAwait(true));
+        
+        [HttpPost]
+        [Route("find-best-match")]
+        public async Task<ActionResult<ApiResponse<BestMatchResponse>>> FindBestMatch(BestMatchRequest request)
+           => Ok(await _masterdataservice.FindBestMatchPercentage(request).ConfigureAwait(true));
+       
     }
 }

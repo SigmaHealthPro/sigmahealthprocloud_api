@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using BAL.Responses;
 using Npgsql;
 using NpgsqlTypes;
+using System.Reflection;
+using System.Text;
+using System.Diagnostics;
+using FuzzySharp;
 
 namespace BAL.Services
 {
@@ -56,13 +60,79 @@ namespace BAL.Services
 
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred during {request.output_column_name} generation in Method: {nameof(GenerateNextId)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
                 throw new Exception(exp?.Message);
-               
+
             }
         }
-#endregion
+        public async Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientDuplicateData()
+        {
+            var result = new GenerateNextIdResponse();
+            return ApiResponse<GenerateNextIdResponse>.Success(result, $"Next  generated successfully.");
+
+        }
+        public async Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientNewData()
+        {
+            var result = new GenerateNextIdResponse();
+            return ApiResponse<GenerateNextIdResponse>.Success(result, $"Next  generated successfully.");
+
+        }
+        public async Task<ApiResponse<BestMatchResponse>> FindBestMatchPercentage(BestMatchRequest request)
+        {
+            try
+            {
+                var dataComposite = CreateCompositeString(request.Data);
+                var targetComposites = await Task.WhenAll(request.TargetData.Select(obj => Task.Run(() => CreateCompositeString(obj))));
+
+                var bestMatch = FuzzySharp.Process.ExtractOne(dataComposite, targetComposites);
+
+                double matchScore = bestMatch?.Score ?? 0.0;
+
+                if (matchScore == 0.0)
+                {
+                    return ApiResponse<BestMatchResponse>.Success(new BestMatchResponse { MatchScore = 0.0 }, "No match found.");
+                }
+                else
+                {
+                    return ApiResponse<BestMatchResponse>.Success(new BestMatchResponse { MatchScore = matchScore }, "Best match percentage calculated successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<BestMatchResponse>.Fail($"An error occurred: {ex.Message}");
+            }
+        }
+
+
+
+
+        #endregion
 
         #region Private Methods
 
+        private string CreateCompositeString(object model)
+        {
+            if (model == null)
+                return string.Empty;
+
+            var compositeString = string.Join(" ", model.GetType().GetProperties().Select(p => p.GetValue(model)?.ToString()));
+            return compositeString.Trim();
+        }
+        private string CreateCompositeString1(object model)
+        {
+            StringBuilder compositeString = new StringBuilder();
+
+            PropertyInfo[] properties = model.GetType().GetProperties();
+            foreach (PropertyInfo prop in properties)
+            {
+                object value = prop.GetValue(model);
+                if (value != null)
+                {
+                    compositeString.Append(value.ToString());
+                    compositeString.Append(" ");
+                }
+            }
+
+            return compositeString.ToString().Trim();
+        }
 
         #endregion
     }

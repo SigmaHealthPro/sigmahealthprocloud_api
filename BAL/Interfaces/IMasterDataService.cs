@@ -10,5 +10,8 @@ namespace BAL.Interfaces
     {
 
         Task<ApiResponse<GenerateNextIdResponse>> GenerateNextId(GenerateNextIdRequest request);
+        Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientDuplicateData();
+        Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientNewData();
+        Task<ApiResponse<BestMatchResponse>> FindBestMatchPercentage(BestMatchRequest request);
     }
 }
