@@ -110,6 +110,31 @@ namespace BAL.Implementation
 
             return siteModelList;
         }
+        public async Task<List<SiteModel>> GetAllSites()
+        {
+            try
+            {
+                var sitelist = new List<SiteModel>();
+                var sites = await context.Sites.ToListAsync();
+                foreach (var c in sites)
+                {
+                    var sitemod = new SiteModel()
+                    {
+                        Id = c.Id,
+                        SiteName = c.SiteName,
+
+                    };
+                    sitelist.Add(sitemod);
+                }
+
+                return sitelist;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetAllSites)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
+            }
+        }
         public async Task<ApiResponse<SiteModel>> GetSiteDetailsById(Guid siteId)
         {
             try
