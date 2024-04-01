@@ -76,6 +76,10 @@ namespace Web_API.Controllers
         [Route("getaddressbyorderid")]
         public async Task<IActionResult> GetAddressbyOrderid(Guid orderid)
         => Ok(await _unitOfWork.Orders.GetAddressbyOrderid(orderid).ConfigureAwait(true));
+        [HttpPost]
+        [Route("getitemsbyorderid")]
+        public async Task<IActionResult> GetOrderItemsbyOrderid(Guid orderid)
+      => Ok(await _unitOfWork.Orders.GetOrderdetailsbyOrderid(orderid).ConfigureAwait(true));
         #endregion
     }
 }

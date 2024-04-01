@@ -19,5 +19,6 @@ namespace BAL.Repository
         public Task<IEnumerable<Mvx>> GetAllManufacturers();
         public Task<ApiResponse<UserAddressModel>> GetAddressbyUserid(Guid userid);
         public Task<ApiResponse<ShipmentAddressModel>> GetAddressbyOrderid(Guid orderid);
+        public Task<ApiResponse<IEnumerable<OrderItemsmodel>>> GetOrderdetailsbyOrderid(Guid orderid);
     }
 }

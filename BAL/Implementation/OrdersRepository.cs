@@ -494,5 +494,50 @@ namespace BAL.Implementation
                 return ApiResponse<ShipmentAddressModel>.Fail("An error occurred while fetching Address details.");
             }
         }
+        public async Task<ApiResponse<IEnumerable<OrderItemsmodel>>> GetOrderdetailsbyOrderid(Guid orderid)
+        {
+            try
+            {
+                var itemslist = new List<OrderItemsmodel>();
+                var orderitems = await context.OrderItems.
+                                    Join(context.Shipments, oi => oi.OrderId, s => s.OrderId, (oi, s) => new { orderitems = oi, shipment = s }).
+                                    Where(i => i.orderitems.OrderId == orderid).Select(i => new OrderItemsmodel
+                                    {
+                                        id = i.orderitems.OrderId,
+                                        itemid = i.orderitems.Id,
+                                        quantity = i.orderitems.Quantity,
+                                        orderitemdesc = i.orderitems.OrderItemDesc,
+                                        typeofpackage = i.shipment.TypeOfPackage,
+                                        unitprice = i.orderitems.UnitPrice
+                                    }).ToListAsync();
+                Parallel.ForEach(orderitems, async i =>
+                {
+                    var model = new OrderItemsmodel()
+                    {
+                        id = i.id,
+                        itemid = i.itemid,
+                        orderitemdesc = i.orderitemdesc,
+                        quantity = i.quantity,
+                        typeofpackage = i.typeofpackage,
+                        unitprice = i.unitprice
+                    };
+                    itemslist.Add(model);
+                });
+                Task.WhenAll();
+                if (orderitems != null)
+                {
+                    return ApiResponse<IEnumerable<OrderItemsmodel>>.Success(orderitems, "OrderItems fetched successfully."); ;
+                }
+                else
+                {
+                    return ApiResponse<IEnumerable<OrderItemsmodel>>.Fail("OrderItems not found for the given user ID");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<IEnumerable<OrderItemsmodel>>.Fail("An error occurred while fetching OrderItems details.");
+            }
+        }
     }
 }
