@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace BAL.Implementation
 {
     public class OrdersRepository : IGenericRepository<OrderModel>, IOrdersRepository
@@ -369,8 +370,8 @@ namespace BAL.Implementation
                 await context.SaveChangesAsync();
                 var newshippment = new Shipment()
                 {
-                    ShipmentDate = entity.Shiping.ShipmentDate,
-                    ExpectedDeliveryDate = entity.Shiping.Expecteddeliverydate,
+                    ShipmentDate = entity.Shiping.ShipmentDate.Value.ToUniversalTime(),
+                    ExpectedDeliveryDate = entity.Shiping.Expecteddeliverydate.Value.ToUniversalTime(),
                     PackageSize = entity.Shiping.PackageSize,
                     PakegeLength = entity.Shiping.PackageLength,
                     PakegeWidth = entity.Shiping.PackageWidth,
@@ -390,8 +391,9 @@ namespace BAL.Implementation
                     CreatedBy = entity.CreatedBy,
                     CreatedDate = entity.CreatedDate,
                     UpdatedBy = entity.UpdatedBy,
-                    UpdatedDate = DateTime.UtcNow,
-                    ShipmentAddressId = neworderaddress.Id
+                    UpdatedDate = entity.UpdatedDate,
+                    ShipmentAddressId = neworderaddress.Id,
+                    OrderId=neworders.Id
                 };
                 context.Shipments.Add(newshippment);
                 await context.SaveChangesAsync();
