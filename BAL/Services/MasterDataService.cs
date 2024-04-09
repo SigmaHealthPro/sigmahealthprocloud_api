@@ -63,17 +63,44 @@ namespace BAL.Services
 
             }
         }
-        public async Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientDuplicateData()
+        public async Task<ApiResponse<PatientDuplicateRecord>> GetListOfPatientDuplicateData()
         {
-            var result = new GenerateNextIdResponse();
-            return ApiResponse<GenerateNextIdResponse>.Success(result, $"Next  generated successfully.");
+            try
+            {
+                var duplicatePatientData = await _dbContext.PatientDuplicateRecords.ToListAsync();
+
+                if (duplicatePatientData == null || !duplicatePatientData.Any())
+                {
+                    return ApiResponse<PatientDuplicateRecord>.Fail("No data found.");
+                }
+
+                return ApiResponse<PatientDuplicateRecord>.SuccessList(duplicatePatientData);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientDuplicateRecord>.Fail("An error occurred while fetching duplicate patient data.");
+            }
 
         }
-        public async Task<ApiResponse<GenerateNextIdResponse>> GetListOfPatientNewData()
+        public async Task<ApiResponse<PatientNewRecord>> GetListOfPatientNewData()
         {
-            var result = new GenerateNextIdResponse();
-            return ApiResponse<GenerateNextIdResponse>.Success(result, $"Next  generated successfully.");
+            try
+            {
+                var patientNewData = await _dbContext.PatientNewRecords.ToListAsync();
 
+                if (patientNewData == null || !patientNewData.Any())
+                {
+                    return ApiResponse<PatientNewRecord>.Fail("No data found.");
+                }
+
+                return ApiResponse<PatientNewRecord>.SuccessList(patientNewData);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientNewRecord>.Fail("An error occurred while fetching details.");
+            }
         }
         public async Task<ApiResponse<BestMatchResponse>> FindBestMatchPercentage(BestMatchRequest request)
         {
