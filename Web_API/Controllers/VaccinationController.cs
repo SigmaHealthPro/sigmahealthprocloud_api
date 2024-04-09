@@ -38,8 +38,8 @@ namespace Web_API.Controllers
 
         [HttpPost]
         [Route("createorder")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderModel obj)
-         => Ok(await _unitOfWork.Orders.InsertAsync(obj).ConfigureAwait(true));
+        public async Task<IActionResult> CreateOrder([FromBody] RespOrderModel obj)
+         => Ok(await _unitOfWork.Orders.InsertOrdersAsync(obj).ConfigureAwait(true));
 
         [HttpPost]
         [Route("editorder")]
@@ -50,6 +50,15 @@ namespace Web_API.Controllers
         [Route("getallfacilities")]
         public async Task<IActionResult> GetAllFacilities()
            => Ok(await _unitOfWork.Facilities.GetAllAsync().ConfigureAwait(true));
+        //GetAllFacilitiesbyjurdid
+        [HttpPost]
+        [Route("getallfacilitiesbyjurdid")]
+        public async Task<IActionResult> GetAllFacilitiesbyjurdid(Guid jurdid)
+        => Ok(await _unitOfWork.Facilities.GetAllFacilitiesbyjurdid(jurdid).ConfigureAwait(true));
+        [HttpGet]
+        [Route("getallmvx")]
+        public async Task<IActionResult> GetAllMVX()
+          => Ok(await _unitOfWork.Orders.GetAllManufacturers().ConfigureAwait(true));
         [HttpGet]
         [Route("getallproducts")]
         public async Task<IActionResult> GetAllProducts()
@@ -57,8 +66,20 @@ namespace Web_API.Controllers
 
         [HttpPost]
         [Route("getallvaccinesbyfacilityid")]
-        public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize)
-         => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize).ConfigureAwait(true));
+        public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize,Guid manufacturerid)
+         => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize,manufacturerid).ConfigureAwait(true));
+        [HttpPost]
+        [Route("getaddressbyuserid")]
+        public async Task<IActionResult> GetAddressbyUserid(Guid userid)
+        => Ok(await _unitOfWork.Orders.GetAddressbyUserid(userid).ConfigureAwait(true));
+        [HttpPost]
+        [Route("getaddressbyorderid")]
+        public async Task<IActionResult> GetAddressbyOrderid(Guid orderid)
+        => Ok(await _unitOfWork.Orders.GetAddressbyOrderid(orderid).ConfigureAwait(true));
+        [HttpPost]
+        [Route("getitemsbyorderid")]
+        public async Task<IActionResult> GetOrderItemsbyOrderid(Guid orderid)
+      => Ok(await _unitOfWork.Orders.GetOrderdetailsbyOrderid(orderid).ConfigureAwait(true));
         #endregion
     }
 }

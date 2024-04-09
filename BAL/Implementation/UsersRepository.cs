@@ -50,8 +50,10 @@ namespace BAL.Implementation
                         i.users.UserType,
                         i.facility.FacilityName,
                         i.jurd.JuridictionName,
+                        i.jurd,
                         i.users.ImageUrl,
-                        i.users.Gender
+                        i.users.Gender,
+                        i.org,
                         
                     }
                     ).FirstOrDefault();
@@ -67,7 +69,7 @@ namespace BAL.Implementation
                 {
                     var model = new Userloginmodel()
                     {
-                        UserId = usermod.UserId,
+                        id = usermod.Id,
                         gender = usermod.Gender,
                         username = usermod.FirstName +" "+ usermod.LastName,
                         firstName = usermod.FirstName,
@@ -77,8 +79,9 @@ namespace BAL.Implementation
                         role = usermod.UserType,
                         facility = usermod.FacilityName,
                         juridiction = usermod.JuridictionName,
-                        birthdate=usermod.DateOfBirth
-                          
+                        birthdate=usermod.DateOfBirth,
+                        juridictionid=usermod.jurd.Id,  
+                        organizationid=usermod.org.Id
 
                 };
                     foreach (var item in contactsmod)

@@ -9,5 +9,6 @@ namespace BAL.Repository
 {
     public interface IFacilitiesRepository : IGenericRepository<Facility>
     {
+        public Task<IEnumerable<Facility>> GetAllFacilitiesbyjurdid(Guid jurdid);
     }
 }

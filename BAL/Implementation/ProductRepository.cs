@@ -107,7 +107,7 @@ namespace BAL.Implementation
             }
         }
 
-        public async Task<PaginationModel<VaccinesModel>> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber,int pagesize)
+        public async Task<PaginationModel<VaccinesModel>> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber,int pagesize,Guid manufacturerid)
         {
             var vaccinelist = new List<VaccinesModel>();
 
@@ -117,7 +117,7 @@ namespace BAL.Implementation
                             Join(context.Cvxes, pr=>pr.product.CvxCodeId.Value.ToString(), cv => cv.Id.ToString(), (pr, cv) => new {product=pr.product,inventory=pr.inventory,facility=pr.facility,cvx=cv}).
                             Join(context.Mvxes, c=>c.product.MvxCodeId.Value.ToString(), mv=>mv.Id.ToString(),(c,mv)=> new {product=c.product,inventory=c.inventory,facility=c.facility,cvx=c.cvx,mvx=mv}).
                             Join(context.VaccinePrices, va=>va.cvx.Id.ToString(), vp=>vp.CvxId.Value.ToString(),(va,vp)=>new {product=va.product,inventory=va.inventory,facility=va.facility,cvx=va.cvx,mvx=va.mvx,vp=vp}).
-                            Where(j=>j.facility.Id==facilityid && j.inventory.Isdelete == false).Select(k => new
+                            Where(j=>j.facility.Id==facilityid && j.mvx.Id== manufacturerid && j.inventory.Isdelete == false).Select(k => new
                             {
                                 k.inventory,
                                 k.product,
@@ -125,7 +125,9 @@ namespace BAL.Implementation
                                 k.cvx,
                                 k.mvx,
                                 k.vp
-                            }).ToListAsync();
+                            }).GroupBy(x => new { x.product.ProductId, x.cvx.Id })
+    .Select(group => group.First())
+                            .ToListAsync();
             Parallel.ForEach(vaccines, async i =>
             {
                 var model = new VaccinesModel()

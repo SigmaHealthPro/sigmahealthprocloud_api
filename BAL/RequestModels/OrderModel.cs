@@ -37,7 +37,8 @@ namespace BAL.RequestModels
         public string? CVXDesc { get; set; }
         
         public Guid? ProductId { get; set; }
-        
+        public string? manufacturername { get; set; }
+
         public int OrderId { get; set; }
        
         public Guid? OrderItemId { get; set; }

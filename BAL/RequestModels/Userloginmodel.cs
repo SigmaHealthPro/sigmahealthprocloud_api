@@ -10,7 +10,7 @@ namespace BAL.RequestModels
     public class Userloginmodel
     {
         [Required]
-        public string? UserId { get; set; }
+        public Guid? id { get; set; }
         [Required]
         public string? username { get; set; }
         [Required]
@@ -38,6 +38,10 @@ namespace BAL.RequestModels
         public string? juridiction { get; set; }
         [Required]
         public string? image { get; set; }
+        [Required]
+        public Guid? juridictionid { get; set;}
+        [Required]
+        public Guid? organizationid { get; set; }
 
 
     }
