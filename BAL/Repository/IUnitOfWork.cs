@@ -26,6 +26,7 @@ namespace BAL.Repository
         IProviderRepository Providers { get; }
         IPatientRepository Patients { get; }
         IOrdersRepository Orders { get; }
+        IInventoryRepository Inventorys { get; }
         int Save();
 
     }

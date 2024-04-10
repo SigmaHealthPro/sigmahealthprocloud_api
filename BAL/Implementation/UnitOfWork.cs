@@ -35,6 +35,8 @@ namespace BAL.Implementation
         public IProviderRepository Providers { get; private set; }
         public IPatientRepository Patients { get; private set; }
         public IProductRepository Products { get; private set; }
+        public IInventoryRepository Inventorys  { get; private set; }
+
 
 
         public UnitOfWork(SigmaproIisContext context, ILogger<UnitOfWork> logger)
@@ -59,6 +61,7 @@ namespace BAL.Implementation
             Events = new EventRepository(_context, _logger, _dbContextudf);
             Providers = new ProviderRepository(_context, _logger, _dbContextudf);
             Products = new ProductRepository(_context, _logger);
+            Inventorys = new InventoryRepository(_context, _logger);
         }
 
 

@@ -11,7 +11,7 @@ namespace BAL.Repository
     public interface IGenericRepository<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync( );
 
         Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
         Task<ApiResponse<string>> InsertAsync(T entity);
