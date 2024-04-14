@@ -508,6 +508,7 @@ namespace BAL.Implementation
                 var itemslist = new List<OrderItemsmodel>();
                 var orderitems = await context.OrderItems.
                                     Join(context.Shipments, oi => oi.OrderId, s => s.OrderId, (oi, s) => new { orderitems = oi, shipment = s }).
+                                    Join(context.Orders, s => s.orderitems.OrderId, o => o.Id, (s, o) => new { orderitems = s.orderitems,shipment=s.shipment,orders=o }).
                                     Where(i => i.orderitems.OrderId == orderid).Select(i => new OrderItemsmodel
                                     {
                                         id = i.orderitems.OrderId,
@@ -515,7 +516,10 @@ namespace BAL.Implementation
                                         quantity = i.orderitems.Quantity,
                                         orderitemdesc = i.orderitems.OrderItemDesc,
                                         typeofpackage = i.shipment.TypeOfPackage,
-                                        unitprice = i.orderitems.UnitPrice
+                                        unitprice = i.orderitems.UnitPrice,
+                                        DiscountAmount=i.orders.DiscountAmount,
+                                        TaxAmount=i.orders.TaxAmount,
+
                                     }).ToListAsync();
                 Parallel.ForEach(orderitems, async i =>
                 {
@@ -526,7 +530,9 @@ namespace BAL.Implementation
                         orderitemdesc = i.orderitemdesc,
                         quantity = i.quantity,
                         typeofpackage = i.typeofpackage,
-                        unitprice = i.unitprice
+                        unitprice = i.unitprice,
+                        TaxAmount=i.TaxAmount,
+                        DiscountAmount=i.DiscountAmount
                     };
                     itemslist.Add(model);
                 });

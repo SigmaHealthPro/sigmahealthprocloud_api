@@ -14,5 +14,7 @@ namespace BAL.RequestModels
         public string? orderitemdesc { get; set; }
         public string? typeofpackage { get; set; }
         public string? unitprice { get; set; }
+        public string? TaxAmount {  get; set; }
+        public string? DiscountAmount { get; set; }
     }
 }
