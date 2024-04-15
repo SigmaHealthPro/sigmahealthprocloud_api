@@ -23,5 +23,6 @@ namespace BAL.RequestModels
         public Guid? Stateid { get; set; }
         public Guid? Cityid { get; set; }
         public string? ZipCode { get; set; }
+        public string? ShipmentDate { get; set; }
     }
 }

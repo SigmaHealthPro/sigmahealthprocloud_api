@@ -484,7 +484,8 @@ namespace BAL.Implementation
                                   Cityid=i.city.Id,
                                   Countyid=i.county.Id,
                                   Stateid=i.state.Id,
-                                  Countryid=i.country.Id                                  
+                                  Countryid=i.country.Id,
+                                  ShipmentDate=i.shipment.ShipmentDate.ToString(),
                                  }).FirstOrDefaultAsync();
                 if (shipmentaddress != null)
                 {
