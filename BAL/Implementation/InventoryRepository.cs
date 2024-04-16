@@ -32,8 +32,8 @@ namespace BAL.Implementation
         {
             return await context.Set<InventoryModel>().ToListAsync();
         }
-
-        public async Task<IEnumerable<InventoryModel>> GetAllAsync(SearchInventoryParams search)
+       
+        public async Task<PaginationModel<InventoryModel>> GetAllAsync(SearchInventoryParams search)
         {
             var inventoryModelList = new List<InventoryModel>();
 
@@ -41,6 +41,28 @@ namespace BAL.Implementation
                         from inventorys in context.Inventories
                         join facility in context.Facilities on inventorys.FacilityId equals facility.Id
                         join site in context.Sites on inventorys.SiteId equals site.Id
+                        join product in context.Products on inventorys.ProductId equals product.Id
+                        //where (
+                        //   (string.IsNullOrWhiteSpace(search.keyword) ||
+                        //   // inventorys.InventoryId.ToString().IndexOf(search.keyword.ToString()) >= 0 ||
+                        //    inventorys.InventoryDate.ToString().IndexOf(search.keyword.ToLower()) >= 0 ||
+                        //    facility.FacilityName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                        //    site.SiteName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                        //    product.ProductName.ToLower().IndexOf(search.keyword.ToLower()) >= 0)
+                        //    &&
+                        //    (string.IsNullOrWhiteSpace(search.InventoryId.ToString()) || inventorys.InventoryId.ToString().IndexOf(search.InventoryId.ToString()) >= 0)
+                        //    &&
+                        //    (string.IsNullOrWhiteSpace(search.InventoryDate.ToString()) || inventorys.InventoryDate.ToString().ToLower().IndexOf(search.InventoryDate.ToString().ToLower()) >= 0)
+
+                        //    &&
+                        //    (string.IsNullOrWhiteSpace(search.FacilityName) || facility.FacilityName.ToLower().IndexOf(search.FacilityName.ToLower()) >= 0)
+                        //     &&
+                        //    (string.IsNullOrWhiteSpace(search.SiteName) || site.SiteName.IndexOf(search.SiteName) >= 0)
+                        //    &&
+                        //    (string.IsNullOrWhiteSpace(search.ProductName) || product.ProductName.IndexOf(search.SiteName) >= 0)
+                        //   &&
+                        //         inventorys.Isdelete == false
+                        //    )
 
                         select new InventoryModel
                         {
@@ -48,12 +70,23 @@ namespace BAL.Implementation
                             InventoryId = inventorys.InventoryId,
                             InventoryDate = inventorys.InventoryDate,
                             Facility = facility.FacilityName,
+                            FacilityId=facility.Id,
+                            SiteId=site.Id,
                             Site = site.SiteName,
-                        });
-            var inventoryList = await query.ToPagedListAsync(search.pagenumber, search.pagesize);
-            inventoryModelList.AddRange(inventoryList);
+                            ProductId = product.Id,
+                            Product = product.ProductName,
+                            TempRecorded = inventorys.TempRecorded,
+                            UnitOfTemp = inventorys.UnitOfTemp,
+                            ExpirationDate = inventorys.ExpirationDate,
+                            QuantityRemaining = inventorys.QuantityRemaining,
 
-            return inventoryModelList;
+                        });
+
+            Task.WhenAll();
+
+            long? totalRows = query.Count();
+            var response = query.Skip(search.pagesize * (search.pagenumber - 1)).Take(search.pagesize).ToList();
+            return PaginationHelper.Paginate(response, search.pagenumber, search.pagesize, Convert.ToInt32(totalRows));
         }
 
         public Task<InventoryModel> GetByIdAsync(int id)
@@ -66,10 +99,10 @@ namespace BAL.Implementation
             try
             {
                 var inventory = new Inventory();
-
                 inventory.InventoryDate = inventoryModel.InventoryDate.HasValue ? DateTime.SpecifyKind(inventoryModel.InventoryDate.Value, DateTimeKind.Utc) : DateTime.UtcNow;
                 inventory.QuantityRemaining = inventoryModel.QuantityRemaining;
                 inventory.ExpirationDate = inventoryModel.ExpirationDate.HasValue ? DateTime.SpecifyKind(inventoryModel.ExpirationDate.Value, DateTimeKind.Utc) : DateTime.UtcNow;
+                inventory.InventoryId = inventoryModel.InventoryId;
                 inventory.TempRecorded = inventoryModel.TempRecorded;
                 inventory.UnitOfTemp = inventoryModel.UnitOfTemp;
                 inventory.FacilityId = new Guid(inventoryModel.Facility);
@@ -101,6 +134,32 @@ namespace BAL.Implementation
             }
         }
 
+
+        public async Task<ApiResponse<InventoryDetailsResponse>> GetInventoryDetailsById(Guid inventoryId)
+        {
+            try
+            {
+                var inventory = await context.Inventories.FindAsync(inventoryId);
+                if (inventory != null)
+                {
+                    var facility = await context.Facilities.FindAsync(inventory.FacilityId);
+                    var site = await context.Sites.FindAsync(inventory.SiteId);
+                    var product = await context.Products.FindAsync(inventory.ProductId);
+
+                    var inventoryDetails = InventoryDetailsResponse.FromInventoryEntity(inventory, facility,site,product);
+
+                    return ApiResponse<InventoryDetailsResponse>.Success(inventoryDetails, "Inventory details fetched successfully.");
+                }
+
+                _logger.LogError($"Inventory with ID {inventoryId} not found.");
+                return ApiResponse<InventoryDetailsResponse>.Fail("Inventory not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<InventoryDetailsResponse>.Fail("An error occurred while fetching facility details.");
+            }
+        }
         public Task<ApiResponse<string>> UpdateAsync(InventoryModel entity)
         {
             throw new NotImplementedException();
@@ -120,6 +179,14 @@ namespace BAL.Implementation
                     var facilityEntity = await context.Set<Facility>().FindAsync(entity.FacilityId);
                     facilityEntity.Isdelete = true;
                     context.Facilities.Update(facilityEntity);
+
+                    var siteEntity = await context.Set<Site>().FindAsync(entity.SiteId);
+                    siteEntity.Isdelete = true;
+                    context.Sites.Update(siteEntity);
+
+                    var productEntity = await context.Set<Product>().FindAsync(entity.ProductId);
+                    productEntity.Isdelete = true;
+                    context.Products.Update(productEntity);
 
                     await context.SaveChangesAsync();
                     return ApiResponse<string>.Success(id.ToString(), "Inventory deleted successfully.");
