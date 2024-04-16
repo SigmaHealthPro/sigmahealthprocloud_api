@@ -5,6 +5,6 @@ namespace BAL.Repository
 {
     public interface IInventoryRepository : IGenericRepository<InventoryModel>
     {
-        public Task<IEnumerable<InventoryModel>> GetAllAsync(SearchInventoryParams search);
+        public Task<PaginationModel<InventoryModel>> GetAllAsync(SearchInventoryParams search);
     }
 }

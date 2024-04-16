@@ -1,6 +1,8 @@
 ﻿using BAL.Constant;
+using BAL.Interfaces;
 using BAL.Repository;
 using BAL.RequestModels;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,7 +14,9 @@ namespace Web_API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _config;
-     
+        private IInventoryService _inventoryService;
+
+
         public InventoryController(IUnitOfWork unitOfWork, IConfiguration config)
         {
             _unitOfWork = unitOfWork;
@@ -33,5 +37,10 @@ namespace Web_API.Controllers
         [Route("deleteinventory")]
         public async Task<IActionResult> DeleteInventory([FromForm, Required] Guid inventoryId) =>
          Ok(await _unitOfWork.Inventorys.DeleteAsync(inventoryId).ConfigureAwait(true));
+
+        [HttpGet]
+        [Route("inventoryDetailsById")]
+        public async Task<IActionResult> GetInventoryDetailsById(Guid inventoryId) =>
+           Ok(await _inventoryService.GetInventoryDetailsById(inventoryId).ConfigureAwait(true));
     }
 }

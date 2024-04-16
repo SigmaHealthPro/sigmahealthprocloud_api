@@ -23,7 +23,9 @@
 
         public string? FacilityName { get; set; }
         public string? SiteName { get; set; }
- 
+        public string? ProductName { get; set; }
+
+
 
         //public string sortBy { get; set; } = "patientname";
         //public string sortDirection { get; set; } = "desc";
