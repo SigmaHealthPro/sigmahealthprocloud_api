@@ -17,10 +17,11 @@ namespace Web_API.Controllers
         private IInventoryService _inventoryService;
 
 
-        public InventoryController(IUnitOfWork unitOfWork, IConfiguration config)
+        public InventoryController(IUnitOfWork unitOfWork, IConfiguration config, IInventoryService inventoryService)
         {
             _unitOfWork = unitOfWork;
             _config = config;
+            _inventoryService = inventoryService;
         }
 
         [HttpPost]
@@ -41,6 +42,6 @@ namespace Web_API.Controllers
         [HttpGet]
         [Route("inventoryDetailsById")]
         public async Task<IActionResult> GetInventoryDetailsById(Guid inventoryId) =>
-           Ok(await _inventoryService.GetInventoryDetailsById(inventoryId).ConfigureAwait(true));
+            Ok(await _inventoryService.GetInventoryDetailsById(inventoryId).ConfigureAwait(true));
     }
 }

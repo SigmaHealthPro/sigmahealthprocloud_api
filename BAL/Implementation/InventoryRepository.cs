@@ -14,8 +14,8 @@ using BAL.Pagination;
 
 namespace BAL.Implementation
 {
-    public class InventoryRepository : IGenericRepository<InventoryModel>, IInventoryRepository
-        {
+    public class InventoryRepository : IGenericRepository<InventoryModel>, IInventoryRepository, IInventoryService
+    {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
         private readonly string _corelationId = string.Empty;
@@ -32,7 +32,7 @@ namespace BAL.Implementation
         {
             return await context.Set<InventoryModel>().ToListAsync();
         }
-       
+
         public async Task<PaginationModel<InventoryModel>> GetAllAsync(SearchInventoryParams search)
         {
             var inventoryModelList = new List<InventoryModel>();
@@ -70,8 +70,8 @@ namespace BAL.Implementation
                             InventoryId = inventorys.InventoryId,
                             InventoryDate = inventorys.InventoryDate,
                             Facility = facility.FacilityName,
-                            FacilityId=facility.Id,
-                            SiteId=site.Id,
+                            FacilityId = facility.Id,
+                            SiteId = site.Id,
                             Site = site.SiteName,
                             ProductId = product.Id,
                             Product = product.ProductName,
@@ -93,7 +93,7 @@ namespace BAL.Implementation
         {
             throw new NotImplementedException();
         }
-    
+
         public async Task<ApiResponse<string>> InsertAsync(InventoryModel inventoryModel)
         {
             try
@@ -114,7 +114,7 @@ namespace BAL.Implementation
                 inventory.UpdatedDate = inventoryModel.UpdatedDate;
                 inventory.CreatedBy = inventoryModel.CreatedBy;
                 inventory.UpdatedBy = inventoryModel.UpdatedBy;
-                
+
                 if (!inventoryModel.IsEdit)
                 {
                     context.Inventories.Add(inventory);
@@ -146,7 +146,7 @@ namespace BAL.Implementation
                     var site = await context.Sites.FindAsync(inventory.SiteId);
                     var product = await context.Products.FindAsync(inventory.ProductId);
 
-                    var inventoryDetails = InventoryDetailsResponse.FromInventoryEntity(inventory, facility,site,product);
+                    var inventoryDetails = InventoryDetailsResponse.FromInventoryEntity(inventory, facility, site, product);
 
                     return ApiResponse<InventoryDetailsResponse>.Success(inventoryDetails, "Inventory details fetched successfully.");
                 }
@@ -165,7 +165,7 @@ namespace BAL.Implementation
             throw new NotImplementedException();
         }
 
-    
+
         public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
