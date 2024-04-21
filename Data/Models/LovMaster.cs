@@ -26,4 +26,6 @@ public partial class LovMaster
     public bool? Isdelete { get; set; }
 
     public string? LongDescription { get; set; }
+
+    public bool? Status { get; set; }
 }
