@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using BAL.Responses;
 using Npgsql;
 using NpgsqlTypes;
+using System.Reflection;
+using System.Text;
+using System.Diagnostics;
+using FuzzySharp;
 
 namespace BAL.Services
 {
@@ -56,13 +60,106 @@ namespace BAL.Services
 
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred during {request.output_column_name} generation in Method: {nameof(GenerateNextId)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
                 throw new Exception(exp?.Message);
-               
+
             }
         }
-#endregion
+        public async Task<ApiResponse<PatientDuplicateRecord>> GetListOfPatientDuplicateData()
+        {
+            try
+            {
+                var duplicatePatientData = await _dbContext.PatientDuplicateRecords.ToListAsync();
+
+                if (duplicatePatientData == null || !duplicatePatientData.Any())
+                {
+                    return ApiResponse<PatientDuplicateRecord>.Fail("No data found.");
+                }
+
+                return ApiResponse<PatientDuplicateRecord>.SuccessList(duplicatePatientData);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientDuplicateRecord>.Fail("An error occurred while fetching duplicate patient data.");
+            }
+
+        }
+        public async Task<ApiResponse<PatientNewRecord>> GetListOfPatientNewData()
+        {
+            try
+            {
+                var patientNewData = await _dbContext.PatientNewRecords.ToListAsync();
+
+                if (patientNewData == null || !patientNewData.Any())
+                {
+                    return ApiResponse<PatientNewRecord>.Fail("No data found.");
+                }
+
+                return ApiResponse<PatientNewRecord>.SuccessList(patientNewData);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientNewRecord>.Fail("An error occurred while fetching details.");
+            }
+        }
+        public async Task<ApiResponse<BestMatchResponse>> FindBestMatchPercentage(BestMatchRequest request)
+        {
+            try
+            {
+                var dataComposite = CreateCompositeString(request.Data);
+                var targetComposites = await Task.WhenAll(request.TargetData.Select(obj => Task.Run(() => CreateCompositeString(obj))));
+
+                var bestMatch = FuzzySharp.Process.ExtractOne(dataComposite, targetComposites);
+
+                double matchScore = bestMatch?.Score ?? 0.0;
+
+                if (matchScore == 0.0)
+                {
+                    return ApiResponse<BestMatchResponse>.Success(new BestMatchResponse { MatchScore = 0.0 }, "No match found.");
+                }
+                else
+                {
+                    return ApiResponse<BestMatchResponse>.Success(new BestMatchResponse { MatchScore = matchScore }, "Best match percentage calculated successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<BestMatchResponse>.Fail($"An error occurred: {ex.Message}");
+            }
+        }
+
+
+
+
+        #endregion
 
         #region Private Methods
 
+        private string CreateCompositeString(object model)
+        {
+            if (model == null)
+                return string.Empty;
+
+            var compositeString = string.Join(" ", model.GetType().GetProperties().Select(p => p.GetValue(model)?.ToString()));
+            return compositeString.Trim();
+        }
+        private string CreateCompositeString1(object model)
+        {
+            StringBuilder compositeString = new StringBuilder();
+
+            PropertyInfo[] properties = model.GetType().GetProperties();
+            foreach (PropertyInfo prop in properties)
+            {
+                object value = prop.GetValue(model);
+                if (value != null)
+                {
+                    compositeString.Append(value.ToString());
+                    compositeString.Append(" ");
+                }
+            }
+
+            return compositeString.ToString().Trim();
+        }
 
         #endregion
     }

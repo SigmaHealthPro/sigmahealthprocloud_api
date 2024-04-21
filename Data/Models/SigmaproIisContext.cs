@@ -19,7 +19,7 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<BusinessConfiguration> BusinessConfigurations { get; set; }
 
-    public virtual DbSet<CitiesMaster> CitiesMasters { get; set; }
+    public virtual DbSet<CitiesMasterDoNotUse> CitiesMasterDoNotUses { get; set; }
 
     public virtual DbSet<City> Cities { get; set; }
 
@@ -56,6 +56,8 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<Event> Events { get; set; }
 
     public virtual DbSet<Facility> Facilities { get; set; }
+
+    public virtual DbSet<Filter> Filters { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
@@ -110,7 +112,7 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<VaccinePriceDoNotUse> VaccinePriceDoNotUses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=sigmaprodb.postgres.database.azure.com,5432;Database=sigmapro_iis;Username=sigmaprodb_user;Password=Rules@23$$11;TrustServerCertificate=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -230,11 +232,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("site_id_suffix");
         });
 
-        modelBuilder.Entity<CitiesMaster>(entity =>
+        modelBuilder.Entity<CitiesMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("cities_master");
+                .ToTable("cities_master_do_not_use");
 
             entity.Property(e => e.CityName)
                 .HasColumnType("character varying")
@@ -322,7 +324,9 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("entity_type");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
-            entity.Property(e => e.Isprimary).HasColumnName("isprimary");
+            entity.Property(e => e.Isprimary)
+                .HasDefaultValue(false)
+                .HasColumnName("isprimary");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -816,6 +820,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.SendingOrganization)
                 .HasColumnType("character varying")
                 .HasColumnName("sending_organization");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(true)
+                .HasColumnName("status");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -829,6 +836,29 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Facilities)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_facility_user_id");
+        });
+
+        modelBuilder.Entity<Filter>(entity =>
+        {
+            entity.HasKey(e => e.FilterId).HasName("filters_pkey");
+
+            entity.ToTable("filters");
+
+            entity.Property(e => e.FilterId)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("filter_id");
+            entity.Property(e => e.FilterCondition)
+                .HasMaxLength(255)
+                .HasColumnName("filter_condition");
+            entity.Property(e => e.FilterType)
+                .HasMaxLength(50)
+                .HasColumnName("filter_type");
+            entity.Property(e => e.LogicalOperator)
+                .HasMaxLength(5)
+                .HasColumnName("logical_operator");
+            entity.Property(e => e.PageName)
+                .HasMaxLength(50)
+                .HasColumnName("page_name");
         });
 
         modelBuilder.Entity<Inventory>(entity =>
@@ -959,6 +989,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.ReferenceId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("reference_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(true)
+                .HasColumnName("status");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -1256,6 +1289,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.OrganizationsId)
                 .HasColumnType("character varying")
                 .HasColumnName("organizations_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValue(true)
+                .HasColumnName("status");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
