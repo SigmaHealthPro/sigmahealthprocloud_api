@@ -33,6 +33,8 @@ public partial class User
 
     public string? ImageUrl { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
 
     public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();

@@ -29,5 +29,7 @@ public partial class Provider
 
     public string? UpdatedBy { get; set; }
 
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
     public virtual Facility? Facility { get; set; }
 }

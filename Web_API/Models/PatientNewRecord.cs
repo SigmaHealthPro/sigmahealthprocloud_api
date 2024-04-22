@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace Web_API.Models;
 
-public partial class Person
+public partial class PatientNewRecord
 {
     public Guid Id { get; set; }
-
-    public int PersonId { get; set; }
 
     public string? PersonType { get; set; }
 
@@ -40,10 +38,4 @@ public partial class Person
     public string? BirthOrder { get; set; }
 
     public Guid? BirthStateId { get; set; }
-
-    public virtual State? BirthState { get; set; }
-
-    public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>();
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

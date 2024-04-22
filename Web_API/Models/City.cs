@@ -29,5 +29,7 @@ public partial class City
 
     public virtual County? County { get; set; }
 
+    public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>();
+
     public virtual State? State { get; set; }
 }

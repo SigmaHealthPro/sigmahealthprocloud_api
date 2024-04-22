@@ -31,5 +31,13 @@ public partial class BusinessConfiguration
 
     public string? AddressIdStart { get; set; }
 
+    public string? SiteIdSuffix { get; set; }
+
+    public string? SiteIdStart { get; set; }
+
+    public string? ProviderIdSuffix { get; set; }
+
+    public string? ProviderIdStart { get; set; }
+
     public virtual ICollection<Juridiction> Juridictions { get; set; } = new List<Juridiction>();
 }

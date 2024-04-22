@@ -31,6 +31,12 @@ public partial class Facility
 
     public Guid? UserId { get; set; }
 
+    public bool? Status { get; set; }
+
+    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual Organization? Organizations { get; set; }
 
     public virtual ICollection<Provider> Providers { get; set; } = new List<Provider>();

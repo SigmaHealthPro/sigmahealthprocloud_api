@@ -1924,6 +1924,7 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.SequenceId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("sequence_id");
+            entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");

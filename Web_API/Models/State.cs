@@ -34,4 +34,8 @@ public partial class State
     public virtual Country? Country { get; set; }
 
     public virtual ICollection<Juridiction> Juridictions { get; set; } = new List<Juridiction>();
+
+    public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>();
+
+    public virtual ICollection<Person> People { get; set; } = new List<Person>();
 }

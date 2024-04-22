@@ -41,6 +41,8 @@ public partial class Address
 
     public virtual ICollection<Organization> Organizations { get; set; } = new List<Organization>();
 
+    public virtual ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
+
     public virtual ICollection<Site> Sites { get; set; } = new List<Site>();
 
     public virtual State? State { get; set; }

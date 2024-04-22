@@ -27,5 +27,7 @@ public partial class Country
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
+    public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>();
+
     public virtual ICollection<State> States { get; set; } = new List<State>();
 }

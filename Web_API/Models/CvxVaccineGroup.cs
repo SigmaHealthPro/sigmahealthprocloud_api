@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace Web_API.Models;
 
-public partial class LovMaster
+public partial class CvxVaccineGroup
 {
     public Guid Id { get; set; }
 
-    public int ReferenceId { get; set; }
+    public int CvxVaccineId { get; set; }
 
-    public string? Key { get; set; }
+    public Guid? CvxCodeId { get; set; }
 
-    public string? Value { get; set; }
+    public string? VaccineStatus { get; set; }
 
-    public string? LovType { get; set; }
+    public string? VaccineGroupName { get; set; }
+
+    public string? CvxForVaccineGroup { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -24,8 +26,4 @@ public partial class LovMaster
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
-
-    public string? LongDescription { get; set; }
-
-    public bool? Status { get; set; }
 }

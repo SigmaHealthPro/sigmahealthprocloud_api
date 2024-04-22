@@ -37,5 +37,9 @@ public partial class Site
 
     public virtual Address? Address { get; set; }
 
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
     public virtual Facility? Facility { get; set; }
+
+    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
 }

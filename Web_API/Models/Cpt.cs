@@ -3,17 +3,21 @@ using System.Collections.Generic;
 
 namespace Web_API.Models;
 
-public partial class LovMaster
+public partial class Cpt
 {
     public Guid Id { get; set; }
 
-    public int ReferenceId { get; set; }
+    public int CptId { get; set; }
 
-    public string? Key { get; set; }
+    public string? CptCode { get; set; }
 
-    public string? Value { get; set; }
+    public string? CptDescription { get; set; }
 
-    public string? LovType { get; set; }
+    public Guid? CvxCodeId { get; set; }
+
+    public string? Comment { get; set; }
+
+    public string? CptCodeId { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -25,7 +29,5 @@ public partial class LovMaster
 
     public bool? Isdelete { get; set; }
 
-    public string? LongDescription { get; set; }
-
-    public bool? Status { get; set; }
+    public DateOnly? ReleaseDate { get; set; }
 }

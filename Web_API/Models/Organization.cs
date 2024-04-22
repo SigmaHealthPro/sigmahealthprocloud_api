@@ -25,6 +25,8 @@ public partial class Organization
 
     public Guid? AddressId { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual Address? Address { get; set; }
 
     public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();

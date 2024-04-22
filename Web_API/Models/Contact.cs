@@ -27,5 +27,5 @@ public partial class Contact
 
     public string? EntityType { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public bool Isprimary { get; set; }
 }
