@@ -34,6 +34,7 @@ namespace BAL.Services
             try
             {
                 var query = _dbContext.Set<User>().AsQueryable();
+                query = query.Where(x => x.Isdelete == false);
 
                 Expression<Func<User, bool>> whereCondition = null;
 
@@ -84,6 +85,53 @@ namespace BAL.Services
             {
                 _logger.LogError($"CorrelationId: {_correlationId} - Exception occurred in GetUsers: {ex.Message}, Stack trace: {ex.StackTrace}");
                 return ApiResponse<UserDetailsResponse>.Fail($"An error occurred while fetching Users: {ex.Message}");
+            }
+        }
+        public async Task<ApiResponse<PersonDetailsResponse>> GetPersons(GetDataByCountRequest requestObject)
+        {
+            try
+            {
+                var query = _dbContext.Set<Person>().AsQueryable();
+                query = query.Where(x => x.Isdelete == false);
+                var resultQuery = query.Select(a => new PersonDetailsResponse
+                {
+                    Id = a.Id,
+                    CreatedBy = a.CreatedBy,
+                    CreatedDate = a.CreatedDate,
+                    BirthOrder = a.BirthOrder,
+                    BirthStateId = a.BirthStateId,
+                    DateOfBirth = a.DateOfBirth,
+                    FirstName = a.FirstName,
+                    Gender = a.Gender,
+                    Isdelete = a.Isdelete,
+                    LastName = a.LastName,
+                    MiddleName = a.MiddleName,
+                    MotherFirstName = a.MotherFirstName,
+                    MotherMaidenLastName = a.MotherMaidenLastName,
+                    MotherLastName = a.MotherLastName,
+                    PersonId = a.PersonId,
+                    PersonType = a.PersonType,
+                    UpdatedBy = a.UpdatedBy,
+                    UpdatedDate = a.UpdatedDate
+                })
+                .OrderBy(a => a.CreatedDate);
+
+
+                var result = await resultQuery.ToListAsync();
+
+                result = result.Take(requestObject.RecordCount ?? 500).ToList();
+
+                return ApiResponse<PersonDetailsResponse>.SuccessList(result, "Persons fetched successfully!");
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError($"CorrelationId: {_correlationId} - Database exception: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<PersonDetailsResponse>.Fail($"A database error occurred while fetching Persons: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CorrelationId: {_correlationId} - Exception occurred in GetPersons: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<PersonDetailsResponse>.Fail($"An error occurred while fetching Persons: {ex.Message}");
             }
         }
         public async Task<ApiResponse<UserDetailsResponse>> GetUserById(Guid Id)
@@ -297,6 +345,7 @@ namespace BAL.Services
 
             return whereCondition;
         }
+      
         private Expression<Func<User, bool>> CombineConditions(Expression<Func<User, bool>> existingCondition, Expression<Func<User, bool>> newCondition)
         {
             if (existingCondition == null)

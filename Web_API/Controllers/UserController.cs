@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Web_API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -74,6 +74,12 @@ namespace Web_API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        [HttpPost]
+        [Route("get-persons")]
+        public async Task<IActionResult> GetPersons([FromBody] GetDataByCountRequest requestObject)
+
+          => Ok(await _userService.GetPersons(requestObject).ConfigureAwait(true));
 
         [HttpPost]
         [Route("get-users")]
