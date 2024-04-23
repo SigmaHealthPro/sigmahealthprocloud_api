@@ -42,28 +42,27 @@ namespace BAL.Implementation
                         join facility in context.Facilities on inventorys.FacilityId equals facility.Id
                         join site in context.Sites on inventorys.SiteId equals site.Id
                         join product in context.Products on inventorys.ProductId equals product.Id
-                        //where (
-                        //   (string.IsNullOrWhiteSpace(search.keyword) ||
-                        //   // inventorys.InventoryId.ToString().IndexOf(search.keyword.ToString()) >= 0 ||
-                        //    inventorys.InventoryDate.ToString().IndexOf(search.keyword.ToLower()) >= 0 ||
-                        //    facility.FacilityName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
-                        //    site.SiteName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
-                        //    product.ProductName.ToLower().IndexOf(search.keyword.ToLower()) >= 0)
-                        //    &&
-                        //    (string.IsNullOrWhiteSpace(search.InventoryId.ToString()) || inventorys.InventoryId.ToString().IndexOf(search.InventoryId.ToString()) >= 0)
-                        //    &&
-                        //    (string.IsNullOrWhiteSpace(search.InventoryDate.ToString()) || inventorys.InventoryDate.ToString().ToLower().IndexOf(search.InventoryDate.ToString().ToLower()) >= 0)
+                        where (
+               (string.IsNullOrWhiteSpace(search.keyword) ||
+                inventorys.InventoryId.ToString().IndexOf(search.keyword.ToString()) >= 0 ||
+               inventorys.InventoryDate.ToString().IndexOf(search.keyword.ToLower()) >= 0 ||
+               facility.FacilityName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+               site.SiteName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+               product.ProductName.ToLower().IndexOf(search.keyword.ToLower()) >= 0)
+               &&
+                      //(string.IsNullOrWhiteSpace(search.InventoryId.ToString()) || inventorys.InventoryId.ToString().IndexOf(search.InventoryId.ToString()) >= 0)
+                      //&&
+                      //(string.IsNullOrWhiteSpace(search.InventoryDate.ToString()) || inventorys.InventoryDate.ToString().ToLower().IndexOf(search.InventoryDate.ToString().ToLower()) >= 0)
 
-                        //    &&
-                        //    (string.IsNullOrWhiteSpace(search.FacilityName) || facility.FacilityName.ToLower().IndexOf(search.FacilityName.ToLower()) >= 0)
-                        //     &&
-                        //    (string.IsNullOrWhiteSpace(search.SiteName) || site.SiteName.IndexOf(search.SiteName) >= 0)
-                        //    &&
-                        //    (string.IsNullOrWhiteSpace(search.ProductName) || product.ProductName.IndexOf(search.SiteName) >= 0)
-                        //   &&
-                        //         inventorys.Isdelete == false
-                        //    )
-
+                      //&&
+                      //(string.IsNullOrWhiteSpace(search.FacilityName) || facility.FacilityName.ToLower().IndexOf(search.FacilityName.ToLower()) >= 0)
+                      // &&
+                      //(string.IsNullOrWhiteSpace(search.SiteName) || site.SiteName.IndexOf(search.SiteName) >= 0)
+                      //&&
+                      //(string.IsNullOrWhiteSpace(search.ProductName) || product.ProductName.IndexOf(search.SiteName) >= 0)
+                      //&&
+                      inventorys.Isdelete == false
+           )
                         select new InventoryModel
                         {
                             Id = inventorys.Id,
@@ -114,6 +113,7 @@ namespace BAL.Implementation
                 inventory.UpdatedDate = inventoryModel.UpdatedDate;
                 inventory.CreatedBy = inventoryModel.CreatedBy;
                 inventory.UpdatedBy = inventoryModel.UpdatedBy;
+                inventory.Isdelete = inventoryModel.Isdelete;
 
                 if (!inventoryModel.IsEdit)
                 {
