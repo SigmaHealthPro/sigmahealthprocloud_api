@@ -12,5 +12,6 @@ namespace BAL.Repository
     public interface IProductRepository:IGenericRepository<Product>
     {
         public Task<PaginationModel<VaccinesModel>> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber,int pagesize,Guid manufacturerid);
+        public Task<ApiResponse<string>> InsertVaccinedata(VaccineModel entity);
     }
 }

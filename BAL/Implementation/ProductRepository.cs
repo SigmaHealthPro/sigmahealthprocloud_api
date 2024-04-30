@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BAL.Implementation
 {
@@ -71,6 +72,69 @@ namespace BAL.Implementation
                 return ApiResponse<string>.Fail("An error occurred while Inserting the Product.");
             }
         }
+        public async Task<ApiResponse<string>> InsertVaccinedata(VaccineModel entity)
+        {
+            try
+            {
+                var newcvx = new Cvx()
+                {
+                    CvxCode = entity.cvxcode,
+                    CvxDescription = entity.cvxdesc,
+                    Note = entity.cvxnotes,
+                    Isdelete = entity.Isdelete,
+                    NonVaccine = entity.nonvaccine,
+                    VaccineName = entity.vaccinename,
+                    VaccineStatus = entity.vaccinestatus,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    ReleaseDate = entity.cvxreleasedate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate
+                };
+                context.Cvxes.Add(newcvx);
+                await context.SaveChangesAsync();
+                var newmvx = new Mvx()
+                {
+                    MvxCode = entity.mvxcode,
+                    ManufacturerName = entity.manufacturername,
+                    Notes = entity.mvxnotes,
+                    Status = entity.status,
+                    ReleaseDate = entity.cvxreleasedate,
+                    Isdelete = entity.Isdelete,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate
+                };
+                context.Mvxes.Add(newmvx);
+                await context.SaveChangesAsync();
+                var newvaccprice = new VaccinePrice()
+                {
+                    Manufacturer = entity.manufacturername,
+                    Brandname = entity.vaccinebrandname,
+                    ContractEndDate = entity.contractenddate,
+                    ContractNumber = entity.contractnumber,
+                    CostPerDose = entity.costperdose,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate,
+                    Isdelete = entity.Isdelete,
+                    Packaging = entity.packaging,
+                    PrivateSectorCostPerDose = entity.privatesectorcost,
+                    CvxId=newcvx.Id
+                };
+                context.VaccinePrices.Add(newvaccprice);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(newcvx.Id.ToString(), "Vaccine information added successfully.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while adding the Vaccine Data.");
+            }
+        }
+        
 
         public async Task<ApiResponse<string>> UpdateAsync(Product entity)
         {
@@ -86,6 +150,7 @@ namespace BAL.Implementation
                 return ApiResponse<string>.Fail("An error occurred while Updating the Product.");
             }
         }
+
         public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try

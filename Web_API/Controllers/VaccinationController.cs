@@ -80,6 +80,11 @@ namespace Web_API.Controllers
         [Route("getitemsbyorderid")]
         public async Task<IActionResult> GetOrderItemsbyOrderid(Guid orderid)
       => Ok(await _unitOfWork.Orders.GetOrderdetailsbyOrderid(orderid).ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("addvaccines")]
+        public async Task<IActionResult> AddVaccines([FromBody] VaccineModel obj)
+         => Ok(await _unitOfWork.Products.InsertVaccinedata(obj).ConfigureAwait(true));
         #endregion
     }
 }

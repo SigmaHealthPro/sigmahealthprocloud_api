@@ -17,8 +17,6 @@ public partial class Mvx
 
     public string? Status { get; set; }
 
-    public string? ManufacturerId { get; set; }
-
     public DateOnly? ReleaseDate { get; set; }
 
     public DateTime? CreatedDate { get; set; }
