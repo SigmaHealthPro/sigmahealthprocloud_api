@@ -92,12 +92,20 @@ namespace Web_API.Controllers
         [Route("getlistofpatientduplicatedata")]
         public async Task<IActionResult> GetListOfPatientDuplicateData()
           => Ok(await _masterdataservice.GetListOfPatientDuplicateData().ConfigureAwait(true));
+        [HttpGet]
+        [Route("getlistofpatientduplicatedatabyid")]
+        public async Task<IActionResult> GetListOfPatientDuplicateData(Guid Id)
+         => Ok(await _masterdataservice.GetListOfPatientDuplicateDataById(Id).ConfigureAwait(true));
 
         [HttpGet]
         [Route("getlistofpatientnewdata")]
         public async Task<IActionResult> GetListOfPatientNewData()
           => Ok(await _masterdataservice.GetListOfPatientNewData().ConfigureAwait(true));
-        
+        [HttpGet]
+        [Route("getlistofpatientnewdatabyid")]
+        public async Task<IActionResult> GetListOfPatientNewDataById(Guid Id)
+         => Ok(await _masterdataservice.GetListOfPatientNewDataById(Id).ConfigureAwait(true));
+
         [HttpPost]
         [Route("find-best-match")]
         public async Task<ActionResult<ApiResponse<BestMatchResponse>>> FindBestMatch(BestMatchRequest request)

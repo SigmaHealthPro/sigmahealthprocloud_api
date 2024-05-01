@@ -81,6 +81,11 @@ namespace Web_API.Controllers
 
           => Ok(await _userService.GetPersons(requestObject).ConfigureAwait(true));
 
+        [HttpGet]
+        [Route("getpersonsbyid")]
+        public async Task<IActionResult> GetPersonsById(Guid Id)
+         => Ok(await _userService.GetPersonsById(Id).ConfigureAwait(true));
+
         [HttpPost]
         [Route("get-users")]
         public async Task<IActionResult> GetUsers([FromBody] GetDataByCountRequest requestObject)
@@ -111,7 +116,7 @@ namespace Web_API.Controllers
 
          => Ok(await _userService.UpdateUserStatus(userRequest).ConfigureAwait(true));
 
-        [HttpDelete]
+        [HttpPost]
         [Route("delete-user")]
         public async Task<IActionResult> DeleteUser([FromForm, Required] Guid Id)
 

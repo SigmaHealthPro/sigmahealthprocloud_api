@@ -38,4 +38,28 @@ public partial class PatientDuplicateRecord
     public string? BirthOrder { get; set; }
 
     public Guid? BirthStateId { get; set; }
+
+    public static PatientDuplicateRecord FromPatientDuplicateRecordEntity(PatientDuplicateRecord record)
+    {
+        return new PatientDuplicateRecord
+        {
+            Id = record.Id,
+            DuplicatePersonId = record.DuplicatePersonId,
+            PersonType = record.PersonType,
+            FirstName = record.FirstName,
+            LastName = record.LastName,
+            Gender = record.Gender,
+            CreatedDate = record.CreatedDate,
+            UpdatedDate = record.UpdatedDate,
+            CreatedBy = record.CreatedBy,
+            UpdatedBy = record.UpdatedBy,
+            DateOfBirth = record.DateOfBirth,
+            MiddleName = record.MiddleName,
+            MotherFirstName = record.MotherFirstName,
+            MotherLastName = record.MotherLastName,
+            MotherMaidenLastName = record.MotherMaidenLastName,
+            BirthOrder = record.BirthOrder,
+            BirthStateId = record.BirthStateId
+        };
+    }
 }

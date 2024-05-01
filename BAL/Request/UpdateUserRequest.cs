@@ -19,8 +19,6 @@ namespace BAL.Request
 
         public string? Designation { get; set; }
 
-        public DateTime? UpdatedDate { get; set; }
-
         public string? UpdatedBy { get; set; }
 
         public Guid? PersonId { get; set; }

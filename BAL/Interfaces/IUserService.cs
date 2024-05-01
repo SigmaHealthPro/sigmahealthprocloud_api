@@ -13,6 +13,7 @@ namespace BAL.Interfaces
     {
         Task<ApiResponse<UserDetailsResponse>> GetUsers(GetDataByCountRequest requestObject);
         Task<ApiResponse<PersonDetailsResponse>> GetPersons(GetDataByCountRequest requestObject);
+        Task<ApiResponse<PersonDetailsResponse>> GetPersonsById(Guid id);
         Task<ApiResponse<string>> CreateUser(CreateUserRequest userRequest);
         Task<ApiResponse<string>> UpdateUser(UpdateUserRequest userRequest);
         Task<ApiResponse<string>> DeleteUser(Guid Id);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,5 +44,31 @@ namespace BAL.Responses
         public string? BirthOrder { get; set; }
 
         public Guid? BirthStateId { get; set; }
+
+        public static PersonDetailsResponse FromPersonEntity(Person person)
+        {
+            return new PersonDetailsResponse
+            {
+                Id = person.Id,
+                PersonId = person.PersonId,
+                PersonType = person.PersonType,
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                Gender = person.Gender,
+                CreatedDate = person.CreatedDate,
+                UpdatedDate = person.UpdatedDate,
+                CreatedBy = person.CreatedBy,
+                UpdatedBy = person.UpdatedBy,
+                Isdelete = person.Isdelete,
+                DateOfBirth = person.DateOfBirth,
+                MiddleName = person.MiddleName,
+                MotherFirstName = person.MotherFirstName,
+                MotherLastName = person.MotherLastName,
+                MotherMaidenLastName = person.MotherMaidenLastName,
+                BirthOrder = person.BirthOrder,
+                BirthStateId = person.BirthStateId
+            };
+        }
+
     }
 }

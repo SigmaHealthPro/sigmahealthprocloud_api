@@ -83,6 +83,28 @@ namespace BAL.Services
             }
 
         }
+
+        public async Task<ApiResponse<PatientDuplicateRecord>> GetListOfPatientDuplicateDataById(Guid id)
+        {
+            try
+            {
+                var duplicatePatientData = await _dbContext.PatientDuplicateRecords.FindAsync(id);
+
+                if (duplicatePatientData == null )
+                {
+                    return ApiResponse<PatientDuplicateRecord>.Fail("No data found.");
+                }
+                var patientDuplicateRecordDetails = PatientDuplicateRecord.FromPatientDuplicateRecordEntity(duplicatePatientData);
+
+                return ApiResponse<PatientDuplicateRecord>.Success(patientDuplicateRecordDetails);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientDuplicateRecord>.Fail("An error occurred while fetching duplicate patient data.");
+            }
+
+        }
         public async Task<ApiResponse<PatientNewRecord>> GetListOfPatientNewData()
         {
             try
@@ -95,6 +117,25 @@ namespace BAL.Services
                 }
 
                 return ApiResponse<PatientNewRecord>.SuccessList(patientNewData);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientNewRecord>.Fail("An error occurred while fetching details.");
+            }
+        }
+        public async Task<ApiResponse<PatientNewRecord>> GetListOfPatientNewDataById(Guid id)
+        {
+            try
+            {
+                var patientNewData = await _dbContext.PatientNewRecords.FindAsync(id);
+
+                if (patientNewData == null)
+                {
+                    return ApiResponse<PatientNewRecord>.Fail("No data found.");
+                }
+               var patientNewDataDetails = PatientNewRecord.FromPatientNewRecordEntity(patientNewData);
+                return ApiResponse<PatientNewRecord>.Success(patientNewDataDetails);
             }
             catch (Exception exp)
             {

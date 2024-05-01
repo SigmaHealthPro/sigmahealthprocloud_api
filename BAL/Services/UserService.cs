@@ -64,8 +64,9 @@ namespace BAL.Services
                     UpdatedBy = a.UpdatedBy,
                     UpdatedDate = a.UpdatedDate,
                     UserId = a.UserId,
-                    UserType = a.UserType
-                    
+                    UserType = a.UserType,
+                    Password=a.Password
+
                 })
                 .OrderBy(a => a.Id);
 
@@ -134,6 +135,25 @@ namespace BAL.Services
                 return ApiResponse<PersonDetailsResponse>.Fail($"An error occurred while fetching Persons: {ex.Message}");
             }
         }
+        public async Task<ApiResponse<PersonDetailsResponse>> GetPersonsById(Guid id)
+        {
+            try
+            {
+                var personData = await _dbContext.People.FindAsync(id);
+
+                if (personData == null)
+                {
+                    return ApiResponse<PersonDetailsResponse>.Fail("No data found.");
+                }
+                var personDataDetails = PersonDetailsResponse.FromPersonEntity(personData);
+                return ApiResponse<PersonDetailsResponse>.Success(personDataDetails);
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PersonDetailsResponse>.Fail("An error occurred while fetching details.");
+            }
+        }
         public async Task<ApiResponse<UserDetailsResponse>> GetUserById(Guid Id)
         {
             try
@@ -175,18 +195,19 @@ namespace BAL.Services
                         {
                             
                             CreatedBy = userRequest.CreatedBy,
-                            CreatedDate = userRequest.CreatedDate,
+                            CreatedDate = DateTime.UtcNow,
                             Designation = userRequest.Designation,
-                            Status = userRequest.Status,
+                            Status = true,
                             Gender = userRequest.Gender,
                             ImageUrl = userRequest.ImageUrl,
-                            Isdelete = userRequest.Isdelete,
+                            Isdelete = false,
                             PersonId = userRequest.PersonId,
                             SequenceId = userRequest.SequenceId,
                             UpdatedBy = userRequest.UpdatedBy,
-                            UpdatedDate = userRequest.UpdatedDate,
+                            UpdatedDate = DateTime.UtcNow,
                             UserId = userRequest.UserId,
-                            UserType = userRequest.UserType
+                            UserType = userRequest.UserType,
+                            Password = userRequest.Password
                         };
 
                         _dbContext.Users.Add(newUser);
@@ -195,7 +216,7 @@ namespace BAL.Services
 
                         transaction.Commit();
 
-                        return ApiResponse<string>.Success(null, $"Entity address inserted successfully.");
+                        return ApiResponse<string>.Success(null, $"User added successfully");
                     }
                     catch (Exception)
                     {
@@ -234,7 +255,7 @@ namespace BAL.Services
                         existingUser.PersonId = userRequest.PersonId  ?? existingUser.PersonId ;
                         
                         existingUser.UpdatedBy = userRequest.UpdatedBy  ?? existingUser.UpdatedBy ;
-                        existingUser.UpdatedDate = userRequest.UpdatedDate  ?? existingUser.UpdatedDate ;
+                        existingUser.UpdatedDate = DateTime.UtcNow ;
                         existingUser.UserId = userRequest.UserId  ?? existingUser.UserId;
                         existingUser.UserType = userRequest.UserType  ?? existingUser.UserType ;
                         existingUser.Password = userRequest.Password  ?? existingUser.Password ;
