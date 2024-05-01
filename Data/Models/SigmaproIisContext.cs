@@ -111,6 +111,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<VaccinePriceDoNotUse> VaccinePriceDoNotUses { get; set; }
 
+    public virtual DbSet<VaccinepriceBkp> VaccinepriceBkps { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=sigmaprodb.postgres.database.azure.com,5432;Database=sigmapro_iis;Username=sigmaprodb_user;Password=Rules@23$$11;TrustServerCertificate=False");
@@ -1015,9 +1017,6 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
-            entity.Property(e => e.ManufacturerId)
-                .HasColumnType("character varying")
-                .HasColumnName("manufacturer_id");
             entity.Property(e => e.ManufacturerName)
                 .HasColumnType("character varying")
                 .HasColumnName("manufacturer_name");
@@ -1973,7 +1972,6 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Manufacturer)
                 .HasColumnType("character varying")
                 .HasColumnName("manufacturer");
-            entity.Property(e => e.NdcId).HasColumnName("ndc_id");
             entity.Property(e => e.Packaging)
                 .HasColumnType("character varying")
                 .HasColumnName("packaging");
@@ -2020,6 +2018,48 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Vaccine)
                 .HasColumnType("character varying")
                 .HasColumnName("vaccine");
+        });
+
+        modelBuilder.Entity<VaccinepriceBkp>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("vaccineprice_bkp");
+
+            entity.Property(e => e.Brandname)
+                .HasColumnType("character varying")
+                .HasColumnName("brandname");
+            entity.Property(e => e.ContractEndDate)
+                .HasColumnType("character varying")
+                .HasColumnName("contract_end_date");
+            entity.Property(e => e.ContractNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("contract_number");
+            entity.Property(e => e.CostPerDose)
+                .HasColumnType("character varying")
+                .HasColumnName("cost_per_dose");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CvxId).HasColumnName("cvx_id");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.Manufacturer)
+                .HasColumnType("character varying")
+                .HasColumnName("manufacturer");
+            entity.Property(e => e.NdcId).HasColumnName("ndc_id");
+            entity.Property(e => e.Packaging)
+                .HasColumnType("character varying")
+                .HasColumnName("packaging");
+            entity.Property(e => e.PriceId).HasColumnName("price_id");
+            entity.Property(e => e.PrivateSectorCostPerDose)
+                .HasColumnType("character varying")
+                .HasColumnName("private_sector_cost_per_dose");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -285,7 +285,7 @@ namespace BAL.Implementation
                 var mvxdet = new Mvx()
                 {
                     Id = m.Id,
-                    ManufacturerId = m.ManufacturerId,
+                    MvxId = m.MvxId,
                     ManufacturerName = m.ManufacturerName,
                     
                 };

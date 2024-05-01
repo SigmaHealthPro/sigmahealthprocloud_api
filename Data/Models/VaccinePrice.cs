@@ -11,8 +11,6 @@ public partial class VaccinePrice
 
     public string? Brandname { get; set; }
 
-    public Guid? NdcId { get; set; }
-
     public string? Packaging { get; set; }
 
     public string? CostPerDose { get; set; }

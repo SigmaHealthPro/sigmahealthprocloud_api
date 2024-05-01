@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Web_API.Models;
+namespace Data.Models;
 
-public partial class VaccinePrice
+public partial class VaccinepriceBkp
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
-    public int PriceId { get; set; }
+    public int? PriceId { get; set; }
 
     public string? Brandname { get; set; }
+
+    public Guid? NdcId { get; set; }
 
     public string? Packaging { get; set; }
 
@@ -34,6 +36,4 @@ public partial class VaccinePrice
     public bool? Isdelete { get; set; }
 
     public Guid? CvxId { get; set; }
-
-    public virtual Cvx? Cvx { get; set; }
 }

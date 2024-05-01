@@ -1,6 +1,7 @@
 ﻿using BAL.Constant;
 using BAL.Repository;
 using BAL.RequestModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -23,6 +24,7 @@ namespace Web_API.Controllers
         }
         #region Orders
         [HttpPost]
+        [EnableCors("AllowSpecificOrigin")]
         [Route("searchorders")]
         public async Task<IActionResult> SearchOrders(SearchOrderParams model)
            => Ok(await _unitOfWork.Orders.GetAllAsync(model).ConfigureAwait(true));
@@ -80,6 +82,11 @@ namespace Web_API.Controllers
         [Route("getitemsbyorderid")]
         public async Task<IActionResult> GetOrderItemsbyOrderid(Guid orderid)
       => Ok(await _unitOfWork.Orders.GetOrderdetailsbyOrderid(orderid).ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("addvaccines")]
+        public async Task<IActionResult> AddVaccines([FromBody] VaccineModel obj)
+         => Ok(await _unitOfWork.Products.InsertVaccinedata(obj).ConfigureAwait(true));
         #endregion
     }
 }
