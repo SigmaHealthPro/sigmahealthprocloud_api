@@ -29,7 +29,7 @@ namespace Web_API.Controllers
         public async Task<IActionResult> SearchOrders(SearchOrderParams model)
            => Ok(await _unitOfWork.Orders.GetAllAsync(model).ConfigureAwait(true));
         [HttpGet]
-        [Route("getallorders")]
+        [Route("getpendingorders")]
         public async Task<IActionResult> GetAllOrders(int pagenumber,int pagesize)
            => Ok(await _unitOfWork.Orders.GetAllOrders(pagenumber,pagesize).ConfigureAwait(true));
 

@@ -148,7 +148,7 @@ namespace BAL.Implementation
                             Join(context.Cvxes, pr=>pr.product.CvxCodeId,c=>c.Id,(pr,c)=>new { orders = pr.orders, pr.items, product = pr.product, pr.facility,cvx = c}).
                             Join(context.Mvxes, pr => pr.product.MvxCodeId, m => m.Id, (pr, m) => new { orders = pr.orders, pr.items, product = pr.product, pr.facility,pr.cvx, mvx = m }).
                             Where(i =>(i.items.OrderItemDesc.ToLower().Contains(keyword) || i.facility.FacilityName.ToLower().Contains(keyword)||i.product.ProductName.ToLower().Contains(keyword)
-                            ) && i.orders.Isdelete == false).
+                            ) && i.orders.OrderStatus=="Approved" && i.orders.Isdelete == false).
                             Select(i => new
                             {
                                 i.orders.Id,
@@ -216,7 +216,8 @@ namespace BAL.Implementation
                             Join(context.Facilities, o => o.orders.FacilityId, f => f.Id, (o, f) => new { orders = o.orders, o.items, facility = f }).
                             Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items, fa.facility, product = p }).                            
                             Join(context.Cvxes, pr => pr.product.CvxCodeId, c => c.Id, (pr, c) => new { orders = pr.orders, product = pr.product, pr.items,  pr.facility, cvx = c }).
-                            Where(i=>i.orders.Isdelete==false).Select
+                            Join(context.Mvxes, pr => pr.product.MvxCodeId, m => m.Id, (pr, m) => new { orders = pr.orders, pr.items, product = pr.product, pr.facility, pr.cvx, mvx = m }).
+                            Where(i=>i.orders.Isdelete==false && (i.orders.OrderStatus=="Pending"||i.orders.OrderStatus=="Rejected")).Select
                             (i => new
                             {
                                 i.orders.Id,
@@ -234,7 +235,8 @@ namespace BAL.Implementation
                                 i.facility,
                                 i.orders.DiscountAmount,
                                 i.orders.Incoterms,
-                                i.orders
+                                i.orders,
+                                i.mvx
 
                             }).ToPagedListAsync(pagenumber, pagesize);
 
@@ -259,6 +261,7 @@ namespace BAL.Implementation
                     UserId = i.orders.UserId,
                     Product = i.ProductName,
                     CVXDesc = i.CvxDescription,
+                    manufacturername=i.mvx.ManufacturerName,
                     CreatedBy = i.orders.CreatedBy,
                     CreatedDate = i.orders.CreatedDate,
                     UpdatedBy = i.orders.UpdatedBy,
