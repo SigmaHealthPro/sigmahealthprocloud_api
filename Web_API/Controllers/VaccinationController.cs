@@ -28,7 +28,7 @@ namespace Web_API.Controllers
         [Route("searchorders")]
         public async Task<IActionResult> SearchOrders(SearchOrderParams model)
            => Ok(await _unitOfWork.Orders.GetAllAsync(model).ConfigureAwait(true));
-        [HttpGet]
+        [HttpPost]
         [Route("getpendingorders")]
         public async Task<IActionResult> GetAllOrders(int pagenumber,int pagesize)
            => Ok(await _unitOfWork.Orders.GetAllOrders(pagenumber,pagesize).ConfigureAwait(true));

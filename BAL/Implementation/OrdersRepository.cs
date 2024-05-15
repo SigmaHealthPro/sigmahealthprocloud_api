@@ -217,7 +217,7 @@ namespace BAL.Implementation
                             Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items, fa.facility, product = p }).                            
                             Join(context.Cvxes, pr => pr.product.CvxCodeId, c => c.Id, (pr, c) => new { orders = pr.orders, product = pr.product, pr.items,  pr.facility, cvx = c }).
                             Join(context.Mvxes, pr => pr.product.MvxCodeId, m => m.Id, (pr, m) => new { orders = pr.orders, pr.items, product = pr.product, pr.facility, pr.cvx, mvx = m }).
-                            Where(i=>i.orders.Isdelete==false && (i.orders.OrderStatus=="Active"||i.orders.OrderStatus=="Rejected")).Select
+                            Where(i=>i.orders.Isdelete==false && (i.orders.OrderStatus=="Active")).Select
                             (i => new
                             {
                                 i.orders.Id,
