@@ -1,6 +1,7 @@
 ﻿using BAL.Constant;
 using BAL.Pagination;
 using BAL.Repository;
+using BAL.Request;
 using BAL.RequestModels;
 using BAL.Responses;
 using Data.Models;
@@ -124,7 +125,7 @@ namespace BAL.Implementation
 
                     return ApiResponse<string>.Success(entity.Id.ToString(), "Order record updated successfully.");
                 }
-                return ApiResponse<string>.Fail("Order with the given ID not found.");
+                return ApiResponse<string>.Success(null,"Order updated");
 
             }
             catch (Exception exp)
@@ -132,6 +133,46 @@ namespace BAL.Implementation
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(UpdateAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
                 return ApiResponse<string>.Fail("An error occurred while updating the order.");
             }
+        }
+        public async Task<ApiResponse<string>> Updateorderstatus(string status,Guid orderid,string comments)
+        {
+            try
+            {
+                var updateOrders = await context.Orders.FindAsync(orderid);
+                if (updateOrders != null)
+                {
+                    updateOrders.OrderStatus = status;
+                    var updateorderitems = await context.OrderItems.FindAsync(orderid);
+                    context.Orders.Update(updateOrders);
+                    await context.SaveChangesAsync(); 
+                    if(updateorderitems != null)
+                    {
+                        updateorderitems.OrderItemStatus = status;
+                        context.OrderItems.Update(updateorderitems);
+                        await context.SaveChangesAsync();
+                    }
+                    var comment = new Comment()
+                    {
+                        CommentsHistory = comments,
+                        CommentSourceId = orderid,
+                        CreatedBy = updateOrders.CreatedBy,
+                        UpdatedBy = updateOrders.UpdatedBy,
+                        CreatedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                    };
+                    context.Comments.Add(comment);
+                    await context.SaveChangesAsync();
+                    
+                }
+                return ApiResponse<string>.Success(null,"Order Approved.");
+
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(UpdateAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while updating the order.");
+            }
+
         }
         public async Task<PaginationModel<OrderModel>> GetAllAsync(SearchOrderParams search)
         {

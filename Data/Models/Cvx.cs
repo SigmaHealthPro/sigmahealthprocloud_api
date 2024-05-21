@@ -35,5 +35,7 @@ public partial class Cvx
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
     public virtual ICollection<VaccinePrice> VaccinePrices { get; set; } = new List<VaccinePrice>();
 }

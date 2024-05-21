@@ -48,6 +48,11 @@ namespace Web_API.Controllers
         public async Task<IActionResult> EditOrder([FromBody] OrderModel obj)
          => Ok(await _unitOfWork.Orders.UpdateAsync(obj).ConfigureAwait(true));
 
+        [HttpPost]
+        [Route("approveorder")]
+        public async Task<IActionResult> ApproveOrder(string status,Guid orderid, string comments)
+        => Ok(await _unitOfWork.Orders.Updateorderstatus(status,orderid,comments).ConfigureAwait(true));
+
         [HttpGet]
         [Route("getallfacilities")]
         public async Task<IActionResult> GetAllFacilities()
