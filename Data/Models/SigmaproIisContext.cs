@@ -23,6 +23,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
+    public virtual DbSet<Comment> Comments { get; set; }
+
     public virtual DbSet<Contact> Contacts { get; set; }
 
     public virtual DbSet<CountiesMaster> CountiesMasters { get; set; }
@@ -57,11 +59,15 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Facility> Facilities { get; set; }
 
+    public virtual DbSet<Feature> Features { get; set; }
+
     public virtual DbSet<Filter> Filters { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
     public virtual DbSet<Juridiction> Juridictions { get; set; }
+
+    public virtual DbSet<Lot> Lots { get; set; }
 
     public virtual DbSet<LovMaster> LovMasters { get; set; }
 
@@ -72,6 +78,8 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<Ndc> Ndcs { get; set; }
 
     public virtual DbSet<NdclookupDoNotUse> NdclookupDoNotUses { get; set; }
+
+    public virtual DbSet<Onboardingdoc> Onboardingdocs { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -91,6 +99,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Profile> Profiles { get; set; }
+
     public virtual DbSet<Provider> Providers { get; set; }
 
     public virtual DbSet<Shipment> Shipments { get; set; }
@@ -101,11 +111,15 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<StatesMaster> StatesMasters { get; set; }
 
+    public virtual DbSet<Subfeature> Subfeatures { get; set; }
+
     public virtual DbSet<TermsCondition> TermsConditions { get; set; }
 
     public virtual DbSet<TestAble> TestAbles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserRoleAccess> UserRoleAccesses { get; set; }
 
     public virtual DbSet<VaccinePrice> VaccinePrices { get; set; }
 
@@ -289,6 +303,33 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.State).WithMany(p => p.Cities)
                 .HasForeignKey(d => d.StateId)
                 .HasConstraintName("fk_stateid");
+        });
+
+        modelBuilder.Entity<Comment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("comments_pkey");
+
+            entity.ToTable("comments");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CommentId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("comment_id");
+            entity.Property(e => e.CommentSourceId).HasColumnName("comment_source_id");
+            entity.Property(e => e.CommentsHistory)
+                .HasColumnType("character varying")
+                .HasColumnName("comments_history");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         modelBuilder.Entity<Contact>(entity =>
@@ -840,6 +881,48 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("fk_facility_user_id");
         });
 
+        modelBuilder.Entity<Feature>(entity =>
+        {
+            entity.HasKey(e => e.Featureid).HasName("feature_pkey");
+
+            entity.ToTable("feature");
+
+            entity.Property(e => e.Featureid)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("featureid");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("created_date");
+            entity.Property(e => e.FeatureName)
+                .HasMaxLength(50)
+                .HasColumnName("feature_name");
+            entity.Property(e => e.Featurelink)
+                .HasMaxLength(50)
+                .HasColumnName("featurelink");
+            entity.Property(e => e.Featuretype)
+                .HasMaxLength(50)
+                .HasColumnName("featuretype");
+            entity.Property(e => e.HasSubfeature).HasColumnName("has_subfeature");
+            entity.Property(e => e.IconCode)
+                .HasMaxLength(100)
+                .HasColumnName("icon_code");
+            entity.Property(e => e.Profileid).HasColumnName("profileid");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("updated_date");
+            entity.Property(e => e.ViewOrder).HasColumnName("view_order");
+
+            entity.HasOne(d => d.Profile).WithMany(p => p.Features)
+                .HasForeignKey(d => d.Profileid)
+                .HasConstraintName("feature_profileid_fkey");
+        });
+
         modelBuilder.Entity<Filter>(entity =>
         {
             entity.HasKey(e => e.FilterId).HasName("filters_pkey");
@@ -891,6 +974,9 @@ public partial class SigmaproIisContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnName("inventory_id");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.Lotnumber)
+                .HasColumnType("character varying")
+                .HasColumnName("lotnumber");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.QuantityRemaining)
                 .HasColumnType("character varying")
@@ -963,6 +1049,32 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.State).WithMany(p => p.Juridictions)
                 .HasForeignKey(d => d.StateId)
                 .HasConstraintName("fk_stateid_jurd");
+        });
+
+        modelBuilder.Entity<Lot>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("lot_no_pkey");
+
+            entity.ToTable("lot");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.LotId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("lot_id");
+            entity.Property(e => e.LotNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("lot_number");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         modelBuilder.Entity<LovMaster>(entity =>
@@ -1167,6 +1279,35 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.UseNdc11)
                 .HasColumnType("character varying")
                 .HasColumnName("Use NDC11");
+        });
+
+        modelBuilder.Entity<Onboardingdoc>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("onboardingdoc_pkey");
+
+            entity.ToTable("onboardingdoc");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.DocId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("doc_id");
+            entity.Property(e => e.Filename)
+                .HasColumnType("character varying")
+                .HasColumnName("filename");
+            entity.Property(e => e.Filepath)
+                .HasColumnType("character varying")
+                .HasColumnName("filepath");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -1587,6 +1728,10 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("product");
 
+            entity.HasIndex(e => e.CvxCodeId, "fki_fk_cv_id");
+
+            entity.HasIndex(e => e.MvxCodeId, "fki_m");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -1611,6 +1756,44 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.CvxCode).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CvxCodeId)
+                .HasConstraintName("fk_cv_id");
+
+            entity.HasOne(d => d.MvxCode).WithMany(p => p.Products)
+                .HasForeignKey(d => d.MvxCodeId)
+                .HasConstraintName("fk_mvx");
+        });
+
+        modelBuilder.Entity<Profile>(entity =>
+        {
+            entity.HasKey(e => e.Profileid).HasName("profile_pkey");
+
+            entity.ToTable("profile");
+
+            entity.Property(e => e.Profileid)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("profileid");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IconCode)
+                .HasMaxLength(50)
+                .HasColumnName("icon_code");
+            entity.Property(e => e.ProfileName)
+                .HasMaxLength(50)
+                .HasColumnName("profile_name");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("updated_date");
+            entity.Property(e => e.ViewOrder).HasColumnName("view_order");
         });
 
         modelBuilder.Entity<Provider>(entity =>
@@ -1851,6 +2034,34 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("state_name");
         });
 
+        modelBuilder.Entity<Subfeature>(entity =>
+        {
+            entity.HasKey(e => e.SubfeatureId).HasName("subfeature_pkey");
+
+            entity.ToTable("subfeature");
+
+            entity.Property(e => e.SubfeatureId)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("subfeature_id");
+            entity.Property(e => e.Featureid).HasColumnName("featureid");
+            entity.Property(e => e.IconCode)
+                .HasMaxLength(100)
+                .HasColumnName("icon_code");
+            entity.Property(e => e.SubfeatureLink)
+                .HasMaxLength(50)
+                .HasColumnName("subfeature_link");
+            entity.Property(e => e.SubfeatureName)
+                .HasMaxLength(50)
+                .HasColumnName("subfeature_name");
+            entity.Property(e => e.ViewOrder)
+                .HasDefaultValue(1)
+                .HasColumnName("view_order");
+
+            entity.HasOne(d => d.Feature).WithMany(p => p.Subfeatures)
+                .HasForeignKey(d => d.Featureid)
+                .HasConstraintName("subfeature_featureid_fkey");
+        });
+
         modelBuilder.Entity<TermsCondition>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("terms_conditions_pkey");
@@ -1938,6 +2149,42 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.Person).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PersonId)
                 .HasConstraintName("fk_user_person_id");
+        });
+
+        modelBuilder.Entity<UserRoleAccess>(entity =>
+        {
+            entity.HasKey(e => e.UserRoleAccessId).HasName("user_role_access_pkey");
+
+            entity.ToTable("user_role_access");
+
+            entity.Property(e => e.UserRoleAccessId)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("user_role_access_id");
+            entity.Property(e => e.AccessLevel)
+                .HasMaxLength(50)
+                .HasColumnName("access_level");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("created_date");
+            entity.Property(e => e.LinkId).HasColumnName("link_id");
+            entity.Property(e => e.LinkType)
+                .HasMaxLength(10)
+                .HasColumnName("link_type");
+            entity.Property(e => e.LovMasterRoleId).HasColumnName("lov_master_role_id");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("updated_date");
+
+            entity.HasOne(d => d.LovMasterRole).WithMany(p => p.UserRoleAccesses)
+                .HasForeignKey(d => d.LovMasterRoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_role_access_lov_master_role_id_fkey");
         });
 
         modelBuilder.Entity<VaccinePrice>(entity =>

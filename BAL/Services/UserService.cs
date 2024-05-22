@@ -353,6 +353,147 @@ namespace BAL.Services
                 return ApiResponse<string>.Fail($"An error occurred while updating user: {ex.Message}");
             }
         }
+
+
+        public async Task<ApiResponse<ProfileResponse>> GetUserRoleAccessFeaturesAndProfiles(Guid lovMasterRoleId)
+        {
+            try
+            {
+                var featureQuery = _dbContext.UserRoleAccesses
+                    .Where(ura => ura.LovMasterRoleId == lovMasterRoleId && ura.LinkType == "feature")
+                    .Join(_dbContext.Features,
+                          ura => ura.LinkId,
+                          f => f.Featureid,
+                          (ura, f) => new { ura, f })
+                    .Join(_dbContext.Profiles,
+                          uf => uf.f.Profileid,
+                          p => p.Profileid,
+                          (uf, p) => new { uf.ura, uf.f, p });
+
+                var subFeatureQuery = _dbContext.UserRoleAccesses
+                    .Where(ura => ura.LovMasterRoleId == lovMasterRoleId && ura.LinkType == "subfeature")
+                    .Join(_dbContext.Subfeatures,
+                          ura => ura.LinkId,
+                          sf => sf.SubfeatureId,
+                          (ura, sf) => new { ura, sf })
+                    .Join(_dbContext.Features,
+                          us => us.sf.Featureid,
+                          f => f.Featureid,
+                          (us, f) => new { us.ura, us.sf, f })
+                    .Join(_dbContext.Profiles,
+                          usf => usf.f.Profileid,
+                          p => p.Profileid,
+                          (usf, p) => new { usf.ura, usf.sf, usf.f, p });
+
+                var featureResult = await featureQuery.ToListAsync();
+                var subFeatureResult = await subFeatureQuery.ToListAsync();
+
+                var profiles = new List<ProfileResponse>();
+
+                foreach (var fr in featureResult)
+                {
+                    var profile = profiles.FirstOrDefault(p => p.ProfileId == fr.p.Profileid);
+                    if (profile == null)
+                    {
+                        profile = new ProfileResponse
+                        {
+                            ProfileId = fr.p.Profileid,
+                            ProfileName = fr.p.ProfileName,
+                            IconCode = fr.p.IconCode,
+                            ViewOrder = fr.p.ViewOrder,
+                            Features = new List<FeatureResponse>()
+                        };
+                        profiles.Add(profile);
+                    }
+
+                    var feature = new FeatureResponse
+                    {
+                        FeatureId = fr.f.Featureid,
+                        FeatureName = fr.f.FeatureName,
+                        FeatureLink = fr.f.Featurelink,
+                        HasSubFeature = fr.f.HasSubfeature,
+                        IconCode = fr.f.IconCode,
+                        ViewOrder = fr.f.ViewOrder,
+                        SubFeatures = new List<SubFeatureResponse>()
+                    };
+
+                    profile.Features.Add(feature);
+                }
+
+                foreach (var sfr in subFeatureResult)
+                {
+                    var profile = profiles.FirstOrDefault(p => p.ProfileId == sfr.p.Profileid);
+                    if (profile == null)
+                    {
+                        profile = new ProfileResponse
+                        {
+                            ProfileId = sfr.p.Profileid,
+                            ProfileName = sfr.p.ProfileName,
+                            IconCode = sfr.p.IconCode,
+                            ViewOrder = sfr.p.ViewOrder,
+                            Features = new List<FeatureResponse>()
+                        };
+                        profiles.Add(profile);
+                    }
+
+                    var feature = profile.Features.FirstOrDefault(f => f.FeatureId == sfr.f.Featureid);
+                    if (feature == null)
+                    {
+                        feature = new FeatureResponse
+                        {
+                            FeatureId = sfr.f.Featureid,
+                            FeatureName = sfr.f.FeatureName,
+                            FeatureLink = sfr.f.Featurelink,
+                            HasSubFeature = sfr.f.HasSubfeature,
+                            IconCode = sfr.f.IconCode,
+                            ViewOrder = sfr.f.ViewOrder,
+                            SubFeatures = new List<SubFeatureResponse>()
+                        };
+                        profile.Features.Add(feature);
+                    }
+
+                    var subFeature = new SubFeatureResponse
+                    {
+                        SubFeatureId = sfr.sf.SubfeatureId,
+                        SubFeatureName = sfr.sf.SubfeatureName,
+                        SubFeatureLink = sfr.sf.SubfeatureLink,
+                        IconCode = sfr.sf.IconCode,
+                        ViewOrder = sfr.sf.ViewOrder
+                    };
+
+                    feature.SubFeatures.Add(subFeature);
+                }
+
+                // Order the lists by ViewOrder
+                profiles = profiles.OrderBy(p => p.ViewOrder).ToList();
+                foreach (var profile in profiles)
+                {
+                    profile.Features = profile.Features.OrderBy(f => f.ViewOrder).ToList();
+                    foreach (var feature in profile.Features)
+                    {
+                        feature.SubFeatures = feature.SubFeatures.OrderBy(sf => sf.ViewOrder).ToList();
+                    }
+                }
+
+                return ApiResponse<ProfileResponse>.SuccessList(profiles, "UserRoleAccess features and profiles fetched successfully!");
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError($"CorrelationId: {_correlationId} - Database exception: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<ProfileResponse>.Fail($"A database error occurred while fetching UserRoleAccess features and profiles: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CorrelationId: {_correlationId} - Exception occurred in GetUserRoleAccessFeaturesAndProfiles: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<ProfileResponse>.Fail($"An error occurred while fetching UserRoleAccess features and profiles: {ex.Message}");
+            }
+        }
+
+
+
+
+        #region 
+        //Private Function
         private Expression<Func<User, bool>> BuildWhereCondition(string identifier)
         {
             Expression<Func<User, bool>> whereCondition = null;
@@ -380,5 +521,6 @@ namespace BAL.Services
 
             return Expression.Lambda<Func<User, bool>>(body, parameter);
         }
+        #endregion
     }
 }

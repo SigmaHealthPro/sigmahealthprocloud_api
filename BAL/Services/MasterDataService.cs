@@ -90,11 +90,31 @@ namespace BAL.Services
             {
                 var duplicatePatientData = await _dbContext.PatientDuplicateRecords.FindAsync(id);
 
-                if (duplicatePatientData == null )
+                if (duplicatePatientData == null)
                 {
                     return ApiResponse<PatientDuplicateRecord>.Fail("No data found.");
                 }
-                var patientDuplicateRecordDetails = PatientDuplicateRecord.FromPatientDuplicateRecordEntity(duplicatePatientData);
+
+                var patientDuplicateRecordDetails = new PatientDuplicateRecord
+                {
+                   
+                    Id = duplicatePatientData.Id,
+                    PersonType = duplicatePatientData.PersonType,
+                    FirstName = duplicatePatientData.FirstName,
+                    LastName = duplicatePatientData.LastName,
+                    Gender = duplicatePatientData.Gender,
+                    CreatedDate = duplicatePatientData.CreatedDate,
+                    UpdatedDate = duplicatePatientData.UpdatedDate,
+                    CreatedBy = duplicatePatientData.CreatedBy,
+                    UpdatedBy = duplicatePatientData.UpdatedBy,
+                    DateOfBirth = duplicatePatientData.DateOfBirth,
+                    MiddleName = duplicatePatientData.MiddleName,
+                    MotherFirstName = duplicatePatientData.MotherFirstName,
+                    MotherLastName = duplicatePatientData.MotherLastName,
+                    MotherMaidenLastName = duplicatePatientData.MotherMaidenLastName,
+                    BirthOrder = duplicatePatientData.BirthOrder,
+                    BirthStateId = duplicatePatientData.BirthStateId
+                };
 
                 return ApiResponse<PatientDuplicateRecord>.Success(patientDuplicateRecordDetails);
             }
@@ -103,8 +123,8 @@ namespace BAL.Services
                 _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
                 return ApiResponse<PatientDuplicateRecord>.Fail("An error occurred while fetching duplicate patient data.");
             }
-
         }
+
         public async Task<ApiResponse<PatientNewRecord>> GetListOfPatientNewData()
         {
             try
@@ -128,13 +148,33 @@ namespace BAL.Services
         {
             try
             {
-                var patientNewData = await _dbContext.PatientNewRecords.FindAsync(id);
+                var patientNewData = await _dbContext.PatientDuplicateRecords.FindAsync(id);
 
                 if (patientNewData == null)
                 {
                     return ApiResponse<PatientNewRecord>.Fail("No data found.");
                 }
-               var patientNewDataDetails = PatientNewRecord.FromPatientNewRecordEntity(patientNewData);
+
+                var patientNewDataDetails = new PatientNewRecord
+                {
+                    Id = patientNewData.Id,
+                    PersonType = patientNewData.PersonType,
+                    FirstName = patientNewData.FirstName,
+                    LastName = patientNewData.LastName,
+                    Gender = patientNewData.Gender,
+                    CreatedDate = patientNewData.CreatedDate,
+                    UpdatedDate = patientNewData.UpdatedDate,
+                    CreatedBy = patientNewData.CreatedBy,
+                    UpdatedBy = patientNewData.UpdatedBy,
+                    DateOfBirth = patientNewData.DateOfBirth,
+                    MiddleName = patientNewData.MiddleName,
+                    MotherFirstName = patientNewData.MotherFirstName,
+                    MotherLastName = patientNewData.MotherLastName,
+                    MotherMaidenLastName = patientNewData.MotherMaidenLastName,
+                    BirthOrder = patientNewData.BirthOrder,
+                    BirthStateId = patientNewData.BirthStateId
+                };
+
                 return ApiResponse<PatientNewRecord>.Success(patientNewDataDetails);
             }
             catch (Exception exp)
@@ -143,6 +183,7 @@ namespace BAL.Services
                 return ApiResponse<PatientNewRecord>.Fail("An error occurred while fetching details.");
             }
         }
+
         public async Task<ApiResponse<BestMatchResponse>> FindBestMatchPercentage(BestMatchRequest request)
         {
             try

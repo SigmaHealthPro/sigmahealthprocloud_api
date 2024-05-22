@@ -28,4 +28,6 @@ public partial class LovMaster
     public string? LongDescription { get; set; }
 
     public bool? Status { get; set; }
+
+    public virtual ICollection<UserRoleAccess> UserRoleAccesses { get; set; } = new List<UserRoleAccess>();
 }

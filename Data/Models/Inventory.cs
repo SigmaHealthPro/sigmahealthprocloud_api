@@ -37,6 +37,8 @@ public partial class Inventory
 
     public bool? Isdelete { get; set; }
 
+    public string? Lotnumber { get; set; }
+
     public virtual Facility? Facility { get; set; }
 
     public virtual Product? Product { get; set; }

@@ -19,5 +19,6 @@ namespace BAL.Interfaces
         Task<ApiResponse<string>> DeleteUser(Guid Id);
         Task<ApiResponse<string>> UpdateUserStatus(UpdateUserStatusRequest userRequest);
         Task<ApiResponse<UserDetailsResponse>> GetUserById(Guid Id);
+        Task<ApiResponse<ProfileResponse>> GetUserRoleAccessFeaturesAndProfiles(Guid lovMasterRoleId);
     }
 }

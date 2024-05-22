@@ -29,5 +29,9 @@ public partial class Product
 
     public DateOnly? ReleaseDate { get; set; }
 
+    public virtual Cvx? CvxCode { get; set; }
+
     public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+
+    public virtual Mvx? MvxCode { get; set; }
 }

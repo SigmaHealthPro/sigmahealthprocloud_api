@@ -28,4 +28,6 @@ public partial class Mvx
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

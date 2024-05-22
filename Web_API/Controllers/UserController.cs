@@ -121,5 +121,13 @@ namespace Web_API.Controllers
         public async Task<IActionResult> DeleteUser([FromForm, Required] Guid Id)
 
          => Ok(await _userService.DeleteUser(Id).ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("get-users-role-access")]
+        public async Task<IActionResult> GetUserRoleAccessFeaturesAndProfiles([FromForm, Required] Guid lovMasterRoleId)
+
+        => Ok(await _userService.GetUserRoleAccessFeaturesAndProfiles(lovMasterRoleId).ConfigureAwait(true));
+
+
     }
 }
