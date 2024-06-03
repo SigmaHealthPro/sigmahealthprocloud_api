@@ -890,9 +890,7 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Featureid)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("featureid");
-            entity.Property(e => e.AccessDisplayName)
-                .HasMaxLength(50)
-                .HasColumnName("access_display_name");
+          
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -1802,13 +1800,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
 
-            entity.HasOne(d => d.CvxCode).WithMany(p => p.Products)
-                .HasForeignKey(d => d.CvxCodeId)
-                .HasConstraintName("fk_cv_id");
-
-            entity.HasOne(d => d.MvxCode).WithMany(p => p.Products)
-                .HasForeignKey(d => d.MvxCodeId)
-                .HasConstraintName("fk_mvx");
+           
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -1840,13 +1832,6 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("updated_date");
             entity.Property(e => e.ViewOrder).HasColumnName("view_order");
 
-            entity.HasOne(d => d.CvxCode).WithMany(p => p.Products)
-                .HasForeignKey(d => d.CvxCodeId)
-                .HasConstraintName("fk_cv_id");
-
-            entity.HasOne(d => d.MvxCode).WithMany(p => p.Products)
-                .HasForeignKey(d => d.MvxCodeId)
-                .HasConstraintName("fk_mvx");
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -2289,10 +2274,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("updated_date");
 
-            entity.HasOne(d => d.LovMasterRole).WithMany(p => p.UserRoleAccesses)
-                .HasForeignKey(d => d.LovMasterRoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("user_role_access_lov_master_role_id_fkey");
+         
         });
 
         modelBuilder.Entity<VaccinePrice>(entity =>
