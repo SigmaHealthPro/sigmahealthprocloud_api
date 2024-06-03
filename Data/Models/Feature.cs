@@ -11,6 +11,8 @@ public partial class Feature
 
     public string? FeatureName { get; set; }
 
+    public string? AccessDisplayName { get; set; }
+
     public string? Featuretype { get; set; }
 
     public string? Featurelink { get; set; }

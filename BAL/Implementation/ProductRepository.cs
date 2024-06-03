@@ -217,6 +217,42 @@ namespace BAL.Implementation
             
 
         }
+        public async Task<ApiResponse<IEnumerable<ProductvaccineinfoModel>>> GetVaccineinfo(Guid productid)
+        {
+            var vaccinelist = new List<ProductvaccineinfoModel>();
+            var vaccines = await context.Products.
+                            Join(context.Cvxes, p => p.CvxCodeId.Value.ToString(), cv => cv.Id.ToString(), (p, cv) => new { product = p, cvx = cv }).
+                            Join(context.Mvxes, c => c.product.MvxCodeId.Value.ToString(), mv => mv.Id.ToString(), (c, mv) => new { product = c.product, cvx = c.cvx, mvx = mv }).                            
+                            Where(j => j.product.Id== productid).Select(k => new
+                            {                                
+                                k.product,                                
+                                k.cvx,
+                                k.mvx                               
+                            }).GroupBy(x => new { x.product.ProductId, x.cvx.Id })
+                            .Select(group => group.First())
+                            .ToListAsync();
+            Parallel.ForEach(vaccines, async i =>
+            {
+                var model = new ProductvaccineinfoModel()
+                {
+                    cvxnotes=i.cvx.Note,
+                    cvxcode=i.cvx.CvxCode,
+                    manufacturername=i.mvx.ManufacturerName,
+                    mvxcode=i.mvx.MvxCode,
+                    mvxnotes=i.mvx.Notes,
+                    nonvaccine=i.cvx.NonVaccine,
+                    productname=i.product.ProductName,
+                    vaccinename=i.cvx.VaccineName,
+                    vaccinestatus=i.cvx.VaccineStatus
+                };
+                vaccinelist.Add(model);
+
+            });
+            Task.WhenAll();
+            return ApiResponse<IEnumerable<ProductvaccineinfoModel>>.Success(vaccinelist, "vaccineinfo fetched successfully."); ;
+            
+
+        }
     }
 }
 
