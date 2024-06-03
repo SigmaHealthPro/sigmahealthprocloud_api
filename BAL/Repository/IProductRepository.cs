@@ -13,5 +13,6 @@ namespace BAL.Repository
     {
         public Task<PaginationModel<VaccinesModel>> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber,int pagesize,Guid manufacturerid);
         public Task<ApiResponse<string>> InsertVaccinedata(VaccineModel entity);
+        public Task<ApiResponse<IEnumerable<ProductvaccineinfoModel>>> GetVaccineinfo(Guid productid);
     }
 }

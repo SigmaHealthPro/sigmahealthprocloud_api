@@ -75,6 +75,12 @@ namespace Web_API.Controllers
         [Route("getallvaccinesbyfacilityid")]
         public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize,Guid manufacturerid)
          =>     Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize,manufacturerid).ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("getvaccineinfobyproductid")]
+        public async Task<IActionResult> GetVaccineinfobyproductid(Guid productid)
+        => Ok(await _unitOfWork.Products.GetVaccineinfo(productid).ConfigureAwait(true));
+
         [HttpPost]
         [Route("getaddressbyuserid")]
         public async Task<IActionResult> GetAddressbyUserid(Guid userid)
