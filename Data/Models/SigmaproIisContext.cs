@@ -896,6 +896,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("created_date");
+            entity.Property(e => e.Element)
+                .HasColumnType("character varying")
+                .HasColumnName("element");
             entity.Property(e => e.FeatureName)
                 .HasMaxLength(50)
                 .HasColumnName("feature_name");
@@ -2043,6 +2046,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.SubfeatureId)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("subfeature_id");
+            entity.Property(e => e.Element)
+                .HasColumnType("character varying")
+                .HasColumnName("element");
             entity.Property(e => e.Featureid).HasColumnName("featureid");
             entity.Property(e => e.IconCode)
                 .HasMaxLength(100)

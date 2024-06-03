@@ -29,6 +29,8 @@ public partial class Feature
 
     public string? IconCode { get; set; }
 
+    public string? Element { get; set; }
+
     public virtual Profile? Profile { get; set; }
 
     public virtual ICollection<Subfeature> Subfeatures { get; set; } = new List<Subfeature>();

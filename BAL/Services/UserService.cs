@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Linq.Expressions;
 using Serilog.Core;
+using System.Xml.Linq;
 
 namespace BAL.Services
 {
@@ -414,6 +415,7 @@ namespace BAL.Services
                         HasSubFeature = fr.f.HasSubfeature,
                         IconCode = fr.f.IconCode,
                         ViewOrder = fr.f.ViewOrder,
+                        Element= fr.f.Element,
                         SubFeatures = new List<SubFeatureResponse>()
                     };
 
@@ -431,6 +433,7 @@ namespace BAL.Services
                             ProfileName = sfr.p.ProfileName,
                             IconCode = sfr.p.IconCode,
                             ViewOrder = sfr.p.ViewOrder,
+
                             Features = new List<FeatureResponse>()
                         };
                         profiles.Add(profile);
@@ -447,6 +450,7 @@ namespace BAL.Services
                             HasSubFeature = sfr.f.HasSubfeature,
                             IconCode = sfr.f.IconCode,
                             ViewOrder = sfr.f.ViewOrder,
+                            Element= sfr.f.Element,
                             SubFeatures = new List<SubFeatureResponse>()
                         };
                         profile.Features.Add(feature);
@@ -458,6 +462,7 @@ namespace BAL.Services
                         SubFeatureName = sfr.sf.SubfeatureName,
                         SubFeatureLink = sfr.sf.SubfeatureLink,
                         IconCode = sfr.sf.IconCode,
+                        Element = sfr.sf.Element,
                         ViewOrder = sfr.sf.ViewOrder
                     };
 

@@ -17,5 +17,7 @@ public partial class Subfeature
 
     public int? ViewOrder { get; set; }
 
+    public string? Element { get; set; }
+
     public virtual Feature? Feature { get; set; }
 }

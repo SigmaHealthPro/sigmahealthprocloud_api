@@ -22,6 +22,7 @@ namespace BAL.Responses
         public string? IconCode { get; set; }
         public bool HasSubFeature { get; set; }
         public int? ViewOrder { get; set; }
+        public string? Element { get; set; }
         public List<SubFeatureResponse> SubFeatures { get; set; } = new List<SubFeatureResponse>();
     }
 
@@ -32,5 +33,6 @@ namespace BAL.Responses
         public string? IconCode { get; set; }
         public int? ViewOrder { get; set; }
         public string? SubFeatureLink { get; set; }
+        public string? Element { get; set; }
     }
 }
