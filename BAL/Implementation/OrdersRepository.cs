@@ -142,13 +142,18 @@ namespace BAL.Implementation
                 if (updateOrders != null)
                 {
                     updateOrders.OrderStatus = status;
-                    var updateorderitems = await context.OrderItems.FindAsync(orderid);
+                    var updateorderitems = await context.OrderItems.Where(i=>i.OrderId==orderid).ToListAsync();
                     context.Orders.Update(updateOrders);
                     await context.SaveChangesAsync(); 
                     if(updateorderitems != null)
                     {
-                        updateorderitems.OrderItemStatus = status;
-                        context.OrderItems.Update(updateorderitems);
+                        foreach (var item in updateorderitems)
+                        {
+                            // Update the properties of the OrderItems as needed
+                            item.OrderItemStatus = status; // Replace 'PropertyToUpdate' and 'newValue' with actual property and value
+                                                              // Repeat the above line for other properties you want to update
+                        }                       
+                        
                         await context.SaveChangesAsync();
                     }
                     var comment = new Comment()
